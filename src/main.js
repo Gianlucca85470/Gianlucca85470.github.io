@@ -16,11 +16,12 @@ if (!reduceMotion) {
     // Barra de progreso ligada al scroll de toda la página
     scroll(animate("#progress", { scaleX: [0, 1] }, { ease: "linear" }))
 
-    // Cada bloque aparece mientras entra en pantalla
+    // Cada bloque aparece mientras entra en pantalla y termina al verse entero
+    // (así también el último bloque, que no puede subir más allá del final)
     document.querySelectorAll(".reveal").forEach((el) => {
         scroll(animate(el, { opacity: [0, 1], y: [40, 0] }), {
             target: el,
-            offset: ["start end", "start 70%"],
+            offset: ["start end", "end end"],
         })
     })
 }

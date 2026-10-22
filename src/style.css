@@ -98,7 +98,7 @@ section > p {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
 }
 
@@ -116,6 +116,31 @@ section > p {
 .card p {
     margin: 0 0 16px;
     color: var(--muted);
+}
+
+#sobre-mi h3 {
+    margin: 24px 0 8px;
+    font-size: 14px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.skills {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+}
+
+.skills li {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 14px;
 }
 
 .links {

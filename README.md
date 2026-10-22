@@ -12,12 +12,7 @@ npm run build   # genera la carpeta dist/ lista para publicar
 
 ## Qué editar
 
-Busca los comentarios `EDITA` en `index.html`:
-
-1. La frase de presentación.
-2. El texto de "Sobre mí".
-3. Los proyectos 2 y 3 (o bórralos).
-4. Tu correo de contacto.
+Todo el contenido está en `index.html`; los estilos en `src/style.css` y las animaciones en `src/main.js`.
 
 ## Publicar
 
