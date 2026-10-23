@@ -1,0 +1,9 @@
+soy un chico
+cambia el fondo a #eef44f
+agrega la sección <h2>Mis intereses</h2>
+<img>
+Crea un archivo README.md que explique qué es el repo
+Saca el CSS a un archivo aparte llamado estilos.css
+Agrega un pie de página con <footer> y el año
+arregla algo que no te guste
+<link rel="stylesheet" href="estilos.css">
