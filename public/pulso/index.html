@@ -1,0 +1,2771 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F2F4F7">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Pulso · Binance en vivo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F4F7;--surface:#FFFFFF;--surface-2:#EAEEF3;--ink:#0F1720;--muted:#5A6676;--line:#DDE3EA;
+  --accent:#1F4FD1;--accent-ink:#FFFFFF;--accent-text:#1F4FD1;--accent-bg:#E6EDFC;
+  --up:#077A55;--up-bg:#DDF3EA;--down:#C0342A;--down-bg:#FBE4E1;--warn:#9A5B00;--warn-bg:#FCEFD3;--info-bg:#E6EDFC;
+  --tag-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(15,23,32,.05),0 4px 14px rgba(15,23,32,.05);
+  --f-disp:'Bricolage Grotesque','IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1016;--surface:#121922;--surface-2:#1A2430;--ink:#E9EEF3;--muted:#93A1B1;--line:#263241;
+    --accent:#3A68E0;--accent-ink:#FFFFFF;--accent-text:#8DB4FF;--accent-bg:#172B52;
+    --up:#35C48F;--up-bg:#10372B;--down:#FF6B5B;--down-bg:#3D1A17;--warn:#F2B84B;--warn-bg:#3A2D10;--info-bg:#172B52;
+    --tag-ink:#07110D;--shadow:none;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1016;--surface:#121922;--surface-2:#1A2430;--ink:#E9EEF3;--muted:#93A1B1;--line:#263241;
+  --accent:#3A68E0;--accent-ink:#FFFFFF;--accent-text:#8DB4FF;--accent-bg:#172B52;
+  --up:#35C48F;--up-bg:#10372B;--down:#FF6B5B;--down-bg:#3D1A17;--warn:#F2B84B;--warn-bg:#3A2D10;--info-bg:#172B52;
+  --tag-ink:#07110D;--shadow:none;color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--f-sans);-webkit-font-smoothing:antialiased;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--f-disp);margin:0;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+ul,ol{list-style:none;margin:0;padding:0}
+svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico{display:inline-grid;place-items:center;line-height:0}
+.app{max-width:720px;margin:0 auto}
+main{padding:14px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.view{display:flex;flex-direction:column;gap:12px}
+
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(6px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) 6px max(16px,env(safe-area-inset-left,0px))}
+.brand{display:flex;align-items:center;gap:10px;flex:none}
+.brand-name{font:700 21px/1 var(--f-disp);letter-spacing:-.02em}
+.status{flex:1;min-width:0;text-align:right;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pulse{position:relative;width:10px;height:10px;border-radius:50%;background:var(--muted);color:var(--muted);flex:none}
+.pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid currentColor;opacity:0}
+.pulse[data-s=live]{background:var(--up);color:var(--up)}
+.pulse[data-s=live]::after{animation:ring 2s ease-out infinite}
+.pulse[data-s=poll]{background:var(--warn);color:var(--warn)}
+.pulse[data-s=down]{background:var(--down);color:var(--down)}
+.pulse[data-s=connecting]{background:var(--warn);animation:blink 1s ease-in-out infinite}
+.pulse[data-s=demo]{background:var(--accent-text);color:var(--accent-text)}
+@keyframes ring{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.7);opacity:0}}
+@keyframes blink{50%{opacity:.35}}
+@keyframes shimmer{to{background-position:-200% 0}}
+@keyframes slideIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes toastIn{from{transform:translateY(-10px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.banner{margin:10px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));padding:10px 12px;border-radius:12px;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--warn-bg);color:var(--warn)}
+.banner.err{background:var(--down-bg);color:var(--down)}
+.banner.info{background:var(--info-bg);color:var(--accent-text)}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs-in{display:flex;max-width:720px;margin:0 auto}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 4px;border:0;background:none;color:var(--muted);font-size:12px;font-weight:500}
+.tab svg{width:22px;height:22px}
+.tab[aria-current=page]{color:var(--accent-text)}
+.tab .badge{position:absolute;margin:-6px 0 0 18px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:var(--down);color:#fff;font:600 10px/16px var(--f-sans);text-align:center}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.card-t{font:600 12px/1.2 var(--f-sans);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.muted{color:var(--muted)}
+.hint{font-size:13px;color:var(--muted)}
+.t-up{color:var(--up)}.t-down{color:var(--down)}.t-warn{color:var(--warn)}
+.mono{font-family:var(--f-mono)}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:99px;font:600 12.5px/1.5 var(--f-sans);background:var(--surface-2);color:var(--muted)}
+.pill.up{background:var(--up-bg);color:var(--up)}
+.pill.down{background:var(--down-bg);color:var(--down)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.info{background:var(--info-bg);color:var(--accent-text)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border:1px solid var(--line);background:var(--surface);border-radius:99px;font-size:14px;font-weight:500}
+.chip[aria-pressed=true]{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:0 12px;min-height:34px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:15px}
+.btn.primary{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
+.btn.danger{color:var(--down)}
+.btn.sm{min-height:36px;padding:0 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:default}
+.icon-btn{display:inline-grid;place-items:center;width:44px;height:44px;border:0;background:none;border-radius:12px;color:var(--muted)}
+.icon-btn svg{width:22px;height:22px}
+.icon-btn.danger:hover{color:var(--down)}
+
+.form{display:grid;gap:12px}
+.field{display:grid;gap:6px;min-width:0}
+.field>label{font-size:13px;font-weight:600;color:var(--muted)}
+.input,.select{width:100%;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-size:16px}
+.input:focus,.select:focus{outline:2px solid var(--accent-text);outline-offset:0;border-color:transparent}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+.form-err{color:var(--down);font-size:14px}
+.form-prev{font-size:14px;color:var(--muted)}
+
+.toasts{position:fixed;left:0;right:0;top:calc(8px + env(safe-area-inset-top,0px));z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center;padding:0 12px;pointer-events:none}
+.toast{pointer-events:auto;position:relative;width:min(100%,460px);background:var(--ink);color:var(--bg);border-radius:14px;padding:12px 44px 12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.3);animation:toastIn .25s ease-out;cursor:pointer}
+.toast-t{font-weight:600}
+.toast-b{font-size:14px;opacity:.9}
+.toast-x{position:absolute;top:2px;right:2px;width:40px;height:40px;display:grid;place-items:center;border:0;background:none;color:inherit;opacity:.7}
+.toast-x svg{width:18px;height:18px}
+.toast.info{padding:10px 14px}
+.tools{display:grid;gap:10px}
+.search{position:relative}
+.search .input{padding-left:40px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted);pointer-events:none}
+.brief-list{display:grid;gap:8px}
+.brief-list li{display:grid;grid-template-columns:10px 1fr;gap:10px;align-items:start;font-size:14.5px}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--muted)}
+.dot.up{background:var(--up)}.dot.down{background:var(--down)}.dot.warn{background:var(--warn)}
+.radar{display:grid;gap:12px}
+.radar-grp{display:grid;gap:6px}
+.radar-grp h3{font:600 14px/1.25 var(--f-sans);letter-spacing:0}
+.radar .chips{gap:6px}
+.chip svg{width:16px;height:16px}
+.chip[aria-pressed=true] svg{fill:currentColor}
+.chip.rc{min-height:32px;padding:0 10px;gap:5px;font-size:13.5px}
+.chip.rc b{font-family:var(--f-mono);font-weight:500}
+.chip.rc span{font-family:var(--f-mono);color:var(--muted);font-size:13px}
+.chip.rc.up span{color:var(--up)}.chip.rc.down span{color:var(--down)}.chip.rc.warn span{color:var(--warn)}
+
+.coins{display:grid;gap:8px}
+.coin{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.star{width:44px;height:56px;display:grid;place-items:center;border:0;background:none;color:var(--muted)}
+.star svg{width:20px;height:20px}
+.star[aria-pressed=true]{color:var(--warn)}
+.star[aria-pressed=true] svg{fill:currentColor}
+.coin-main{display:grid;grid-template-columns:minmax(0,1fr) 56px auto 40px;align-items:center;gap:8px;text-align:left;border:0;background:none;padding:8px 10px 8px 0;min-height:56px;width:100%;min-width:0}
+.coin-id{min-width:0;display:grid}
+.coin-id b{font-weight:600}
+.coin-id small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spark{width:56px;height:24px;overflow:visible;color:var(--muted)}
+.spark path{fill:none;stroke:currentColor;stroke-width:1.6}
+.spark.up{color:var(--up)}.spark.down{color:var(--down)}
+.coin-px{display:grid;justify-items:end;text-align:right}
+.px{font:500 15px/1.25 var(--f-mono);padding:0 4px;border-radius:6px}
+.chg{font:500 12.5px/1.3 var(--f-mono);color:var(--muted)}
+.chg.up{color:var(--up)}.chg.down{color:var(--down)}
+.score{display:grid;place-items:center;width:38px;height:28px;border-radius:8px;font:600 13px var(--f-mono);background:var(--surface-2);color:var(--muted)}
+.score.up{background:var(--up-bg);color:var(--up)}
+.score.down{background:var(--down-bg);color:var(--down)}
+.score.warn{background:var(--warn-bg);color:var(--warn)}
+@keyframes flUpA{from{background:var(--up-bg)}to{background:transparent}}
+@keyframes flUpB{from{background:var(--up-bg)}to{background:transparent}}
+@keyframes flDnA{from{background:var(--down-bg)}to{background:transparent}}
+@keyframes flDnB{from{background:var(--down-bg)}to{background:transparent}}
+.fl-up-a{animation:flUpA .8s ease-out}.fl-up-b{animation:flUpB .8s ease-out}
+.fl-dn-a{animation:flDnA .8s ease-out}.fl-dn-b{animation:flDnB .8s ease-out}
+@media (max-width:359px){.spark{display:none}.coin-main{grid-template-columns:minmax(0,1fr) auto 38px}}
+.skel{height:58px;border-radius:var(--r);background:linear-gradient(90deg,var(--surface-2),var(--surface),var(--surface-2));background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+.empty{padding:22px 14px;text-align:center;color:var(--muted);font-size:14.5px}
+.disc{font-size:12.5px;color:var(--muted);text-align:center;padding:4px 8px 0}
+.sheet{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end}
+.sheet-scrim{position:absolute;inset:0;background:rgba(8,12,18,.5)}
+.sheet-panel{position:relative;width:100%;max-width:560px;height:100%;background:var(--bg);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25);animation:slideIn .22s ease-out}
+@media (max-width:640px){.sheet-panel{max-width:none}}
+.sheet-head{display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--line);background:var(--bg);padding:calc(6px + env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) 6px max(6px,env(safe-area-inset-left,0px))}
+.sheet-head .star{height:44px}
+.sheet-head h2{font-size:19px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet-head h2 small{font:400 14px var(--f-sans);color:var(--muted);margin-left:6px}
+.sheet-body{flex:1;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet-body>*{flex:none}
+.price-big{font:500 34px/1.1 var(--f-mono);letter-spacing:-.02em}
+.price-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.chart-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-bottom:8px}
+canvas.chart{display:block;width:100%;height:250px;touch-action:pan-y;cursor:crosshair}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid var(--accent-text);vertical-align:middle;margin-right:6px}
+.gauge{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin:2px 0 8px}
+.gauge-bar{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.gauge-bar i{display:block;height:100%;border-radius:99px;background:var(--muted);transition:width .4s}
+.gauge-bar.up i{background:var(--up)}.gauge-bar.down i{background:var(--down)}.gauge-bar.warn i{background:var(--warn)}
+.gauge b{font:600 24px/1 var(--f-mono)}
+.gauge small{color:var(--muted);font:400 13px var(--f-sans)}
+.perfil{font:700 18px/1.25 var(--f-disp)}
+.sumline{margin-top:6px;font-size:14.5px}
+.lst{display:grid;gap:6px;margin-top:12px}
+.lst h4{font:600 12px var(--f-sans);letter-spacing:.07em;text-transform:uppercase}
+.lst.pro h4,.lst.pro li::before{color:var(--up)}
+.lst.con h4,.lst.con li::before{color:var(--down)}
+.lst.note h4,.lst.note li::before{color:var(--muted)}
+.lst li{position:relative;padding-left:16px;font-size:14.5px}
+.lst li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:currentColor}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;margin:0}
+.stats div{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.stats dt{color:var(--muted)}
+.stats dd{margin:0;font-family:var(--f-mono);text-align:right}
+@media (max-width:440px){.stats{grid-template-columns:1fr}}
+details.card>summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:28px}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::after{content:"+";font:500 22px var(--f-mono);color:var(--muted)}
+details.card[open]>summary::after{content:"−"}
+details.card[open]>summary{margin-bottom:12px}
+.stale{font-size:12.5px;color:var(--warn)}
+.perm{display:grid;gap:10px}
+.perm .acts{display:flex;flex-wrap:wrap;gap:8px}
+.alert-list,.pos-list,.log-list{display:grid;gap:8px}
+.alert-item,.pos-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 6px 8px 14px}
+.al-title{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.al-title button{border:0;background:none;padding:0;font-weight:700;color:var(--accent-text)}
+.al-sub{grid-column:1;font-size:13px;color:var(--muted);min-width:0}
+.al-act{grid-row:1/span 2;grid-column:2;display:flex;align-items:center;gap:0}
+.alert-item.fired{opacity:.85}
+.log-list li{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.log-list li:last-child{border-bottom:0}
+.log-list time{color:var(--muted);font:400 12.5px var(--f-mono);white-space:nowrap;padding-top:2px}
+.sum-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sum-grid .wide{grid-column:1/-1}
+.sum-grid div{display:grid;gap:2px;min-width:0}
+.sum-grid small{color:var(--muted);font-size:12px}
+.sum-grid b{font:500 16px/1.25 var(--f-mono);overflow-wrap:anywhere}
+.pos-main{grid-column:1;min-width:0}
+.pos-pl{font:500 14px var(--f-mono)}
+.res{background:var(--surface-2);border-radius:12px;padding:12px;display:grid;gap:6px;font-size:14.5px}
+.res b{font-family:var(--f-mono);font-weight:500}
+.res .warnline{color:var(--warn);font-size:13.5px}
+.learn{display:grid;gap:8px}
+.learn details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:0 14px;box-shadow:var(--shadow)}
+.learn summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:52px;font:600 15.5px/1.3 var(--f-disp)}
+.learn summary::-webkit-details-marker{display:none}
+.learn summary::after{content:"+";font:500 22px var(--f-mono);color:var(--muted)}
+.learn details[open] summary::after{content:"−"}
+.learn .body{display:grid;gap:8px;padding:0 0 14px;font-size:14.5px}
+.learn .body code{font-family:var(--f-mono);background:var(--surface-2);padding:1px 6px;border-radius:6px;font-size:13.5px;overflow-wrap:anywhere}
+.learn .body ul{display:grid;gap:4px;padding-left:18px;list-style:disc}
+.set-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);min-height:56px}
+.set-row:last-child{border-bottom:0}
+.set-row .lbl{font-weight:600}
+.set-row .hint{margin-top:1px}
+.sw{position:relative;flex:none;width:48px;height:28px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:transform .15s}
+.sw[aria-checked=true]{background:var(--accent);border-color:transparent}
+.sw[aria-checked=true]::after{transform:translateX(20px);background:#fff}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><span class="pulse" id="pulse" data-s="connecting"></span><span class="brand-name">Pulso</span></div>
+    <span class="status" id="statusTxt" role="status">Conectando…</span>
+    <button class="icon-btn" id="btnSettings" type="button" aria-label="Ajustes"><span class="ico" data-icon="tune"></span></button>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+  <main>
+    <section class="view" id="v-mercado" aria-label="Mercado"></section>
+    <section class="view" id="v-alertas" aria-label="Alertas" hidden></section>
+    <section class="view" id="v-cartera" aria-label="Cartera" hidden></section>
+    <section class="view" id="v-aprende" aria-label="Aprender" hidden></section>
+  </main>
+</div>
+<nav class="tabs" id="tabsNav" aria-label="Secciones"><div class="tabs-in" id="tabs"></div></nav>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="csTitle">
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <button class="icon-btn" id="csBack" type="button" aria-label="Cerrar"><span class="ico" data-icon="back"></span></button>
+      <h2 id="csTitle"></h2>
+      <button class="icon-btn star" id="csStar" type="button" aria-pressed="false" aria-label="Agregar a favoritas"><span class="ico" data-icon="star"></span></button>
+    </div>
+    <div class="sheet-body" id="csBody"></div>
+  </div>
+</div>
+
+<div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="stTitle">
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <button class="icon-btn" id="stBack" type="button" aria-label="Cerrar"><span class="ico" data-icon="back"></span></button>
+      <h2 id="stTitle">Ajustes</h2>
+    </div>
+    <div class="sheet-body" id="stBody"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<datalist id="coinlist"></datalist>
+<noscript><p style="padding:24px;font-family:sans-serif">Pulso necesita JavaScript activado para funcionar.</p></noscript>
+<script>
+'use strict';
+/* ==========================================================================
+   Pulso · núcleo puro (sin DOM): formato, indicadores, análisis y alertas
+   ========================================================================== */
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const mean = (a) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : NaN);
+const median = (a) => {
+  if (!a.length) return NaN;
+  const s = [...a].sort((x, y) => x - y), m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+};
+const MINUS = '−';
+const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+const NAMES = {
+  BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', SOL: 'Solana', XRP: 'XRP', DOGE: 'Dogecoin', ADA: 'Cardano',
+  TRX: 'TRON', AVAX: 'Avalanche', LINK: 'Chainlink', DOT: 'Polkadot', LTC: 'Litecoin', BCH: 'Bitcoin Cash',
+  NEAR: 'NEAR', UNI: 'Uniswap', ATOM: 'Cosmos', XLM: 'Stellar', ETC: 'Ethereum Classic', FIL: 'Filecoin',
+  APT: 'Aptos', ARB: 'Arbitrum', OP: 'Optimism', INJ: 'Injective', SUI: 'Sui', SEI: 'Sei', PEPE: 'Pepe',
+  SHIB: 'Shiba Inu', AAVE: 'Aave', MKR: 'Maker', HBAR: 'Hedera', ICP: 'Internet Computer', RUNE: 'THORChain',
+  TON: 'Toncoin', POL: 'Polygon', TIA: 'Celestia', WLD: 'Worldcoin', JUP: 'Jupiter', ENA: 'Ethena',
+  RENDER: 'Render', IMX: 'Immutable', CRV: 'Curve', ALGO: 'Algorand', VET: 'VeChain',
+};
+
+const baseOf = (sym) => (sym.endsWith('USDT') ? sym.slice(0, -4) : sym);
+function normSym(v) {
+  const s = String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!s) return '';
+  return s.endsWith('USDT') && s.length > 4 ? s : s + 'USDT';
+}
+
+/* ---------- formato ---------- */
+function fmtPrice(p) {
+  if (p == null || !isFinite(p)) return '—';
+  const a = Math.abs(p);
+  const d = a >= 100 ? 2 : a >= 10 ? 3 : a >= 1 ? 4 : a >= 0.1 ? 5 : a >= 0.01 ? 6 : 8;
+  return p.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtNum(x, d = 2) {
+  return x == null || !isFinite(x) ? '—' : x.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fmtUSDT(x) {
+  if (x == null || !isFinite(x)) return '—';
+  const a = Math.abs(x);
+  return fmtNum(x, a >= 1 || a === 0 ? 2 : a >= 0.01 ? 4 : 6);
+}
+function fmtQty(q) {
+  if (q == null || !isFinite(q)) return '—';
+  const a = Math.abs(q);
+  return q.toLocaleString('en-US', { maximumFractionDigits: a >= 1000 ? 2 : a >= 1 ? 4 : 8 });
+}
+function fmtPct(p, d = 2) {
+  if (p == null || !isFinite(p)) return '—';
+  const r = Math.abs(p).toFixed(d);
+  if (Number(r) === 0) return r + '%';
+  return (p > 0 ? '+' : MINUS) + r + '%';
+}
+function fmtBig(x) {
+  if (x == null || !isFinite(x)) return '—';
+  const a = Math.abs(x);
+  if (a >= 1e9) return (x / 1e9).toFixed(1) + ' mil M';
+  if (a >= 1e6) return (x / 1e6).toFixed(1) + ' M';
+  if (a >= 1e3) return (x / 1e3).toFixed(1) + ' K';
+  return x.toFixed(0);
+}
+function ago(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  if (s < 60) return s + ' s';
+  const m = Math.round(s / 60);
+  if (m < 60) return m + ' min';
+  const h = Math.round(m / 60);
+  if (h < 48) return h + ' h';
+  return Math.round(h / 24) + ' d';
+}
+function fmtAxisTime(ms, iv, multiDay) {
+  const d = new Date(ms), p = (n) => String(n).padStart(2, '0');
+  if (iv === '1d') return d.getDate() + ' ' + MES[d.getMonth()];
+  if (multiDay) return d.getDate() + ' ' + MES[d.getMonth()] + ' ' + p(d.getHours()) + 'h';
+  return p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function fmtFull(ms) {
+  const d = new Date(ms), p = (n) => String(n).padStart(2, '0');
+  return d.getDate() + ' ' + MES[d.getMonth()] + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+/* Acepta "70000", "70,000", "0,5", "1.234,56", "1,234.56" */
+function parseNum(v) {
+  if (typeof v === 'number') return v;
+  let s = String(v == null ? '' : v).trim().replace(/[\s_]/g, '');
+  if (!s) return NaN;
+  const hasC = s.includes(','), hasD = s.includes('.');
+  if (hasC && hasD) {
+    if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.');
+    else s = s.replace(/,/g, '');
+  } else if (hasC) {
+    if (/^[1-9]\d{0,2}(,\d{3})+$/.test(s)) s = s.replace(/,/g, '');
+    else s = s.replace(',', '.');
+  } else if (hasD && /^[1-9]\d{0,2}(\.\d{3}){2,}$/.test(s)) {
+    s = s.replace(/\./g, '');
+  }
+  return /^-?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i.test(s) ? Number(s) : NaN;
+}
+
+/* ---------- indicadores ---------- */
+function sma(a, n) {
+  if (a.length < n) return null;
+  let s = 0;
+  for (let i = a.length - n; i < a.length; i++) s += a[i];
+  return s / n;
+}
+function smaSeries(a, n) {
+  const out = new Array(a.length).fill(null);
+  let s = 0;
+  for (let i = 0; i < a.length; i++) {
+    s += a[i];
+    if (i >= n) s -= a[i - n];
+    if (i >= n - 1) out[i] = s / n;
+  }
+  return out;
+}
+/* RSI de Wilder */
+function rsi(c, n = 14) {
+  if (c.length < n + 1) return null;
+  let gain = 0, loss = 0;
+  for (let i = 1; i <= n; i++) {
+    const d = c[i] - c[i - 1];
+    if (d >= 0) gain += d; else loss -= d;
+  }
+  gain /= n; loss /= n;
+  for (let i = n + 1; i < c.length; i++) {
+    const d = c[i] - c[i - 1];
+    gain = (gain * (n - 1) + (d > 0 ? d : 0)) / n;
+    loss = (loss * (n - 1) + (d < 0 ? -d : 0)) / n;
+  }
+  if (loss === 0) return gain === 0 ? 50 : 100;
+  return 100 - 100 / (1 + gain / loss);
+}
+/* Desviación estándar de los retornos diarios, en % */
+function dailyVol(c, n = 14) {
+  if (c.length < n + 1) return null;
+  const r = [];
+  for (let i = c.length - n; i < c.length; i++) r.push(c[i] / c[i - 1] - 1);
+  const m = mean(r);
+  const v = r.reduce((a, b) => a + (b - m) * (b - m), 0) / (r.length - 1);
+  return Math.sqrt(v) * 100;
+}
+function pctChange(c, k) {
+  const i = c.length - 1 - k;
+  return i >= 0 && c[i] > 0 ? (c[c.length - 1] / c[i] - 1) * 100 : null;
+}
+
+/* ---------- análisis ---------- */
+const RSI_ZONE = [[0, 10], [30, 25], [40, 50], [50, 85], [60, 100], [65, 95], [70, 60], [75, 30], [80, 10], [100, 0]];
+function zoneScore(r) {
+  if (r == null) return null;
+  for (let i = 1; i < RSI_ZONE.length; i++) {
+    if (r <= RSI_ZONE[i][0]) {
+      const [x0, y0] = RSI_ZONE[i - 1], [x1, y1] = RSI_ZONE[i];
+      return lerp(y0, y1, (r - x0) / (x1 - x0));
+    }
+  }
+  return 0;
+}
+
+/* x = { price, ch24, qvol24, h1c[], d1c[], d1h[], d1q[] }  (la última vela ya incluye el precio en vivo) */
+function analyze(x) {
+  const P = x.price, hc = x.h1c, dc = x.d1c;
+  if (!(P > 0) || !hc || hc.length < 51 || !dc || dc.length < 21) return null;
+
+  const sma20h = sma(hc, 20), sma50h = sma(hc, 50);
+  const sma20d = sma(dc, 20), sma50d = dc.length >= 50 ? sma(dc, 50) : null;
+  const rsiH = rsi(hc, 14), rsiD = rsi(dc, 14);
+  const ch7 = pctChange(dc, 7), ch30 = pctChange(dc, 30);
+  const vol = dailyVol(dc, 14);
+
+  let relVol = null;
+  if (x.d1q && x.d1q.length >= 21 && x.qvol24 > 0) {
+    const avg = mean(x.d1q.slice(-21, -1));
+    if (avg > 0) relVol = x.qvol24 / avg;
+  }
+  let hi30 = null, fromHigh = null;
+  if (x.d1h && x.d1h.length >= 10) {
+    hi30 = Math.max(P, ...x.d1h.slice(-30));
+    fromHigh = (P / hi30 - 1) * 100;
+  }
+
+  const conds = [
+    { ok: P > sma20d },
+    sma50d != null && { ok: P > sma50d },
+    sma50d != null && { ok: sma20d > sma50d },
+    { ok: P > sma20h },
+    { ok: sma20h > sma50h },
+  ].filter(Boolean);
+  const okN = conds.filter((c) => c.ok).length;
+  const trend = (100 * okN) / conds.length;
+
+  const impulse = ch7 == null ? 50 : 100 * (0.7 * clamp((ch7 + 10) / 30, 0, 1) + 0.3 * clamp((x.ch24 + 5) / 10, 0, 1));
+  const rz = mean([zoneScore(rsiH), zoneScore(rsiD)].filter((v) => v != null));
+  const fuerza = Math.round(0.5 * trend + 0.3 * impulse + 0.2 * rz);
+
+  const over = rsiH >= 70 || rsiD >= 70;
+  const under = rsiH <= 30 || rsiD <= 30;
+  const risk = vol == null ? null : vol < 2.5 ? 'Bajo' : vol < 5 ? 'Medio' : vol < 8 ? 'Alto' : 'Muy alto';
+
+  let perfil, tono;
+  if (over && fuerza >= 55) { perfil = 'Fuerte, pero recalentada'; tono = 'warn'; }
+  else if (over) { perfil = 'Recalentada'; tono = 'warn'; }
+  else if (under) { perfil = 'Cayó mucho; puede rebotar o seguir bajando'; tono = 'warn'; }
+  else if (fuerza >= 70) { perfil = 'Tendencia fuerte'; tono = 'up'; }
+  else if (fuerza >= 55) { perfil = 'Tendencia moderada al alza'; tono = 'up'; }
+  else if (fuerza <= 30) { perfil = 'Tendencia débil'; tono = 'down'; }
+  else if (fuerza <= 45) { perfil = 'Tendencia moderada a la baja'; tono = 'down'; }
+  else { perfil = 'Mixta, sin dirección clara'; tono = 'neutral'; }
+
+  const pros = [], cons = [], notes = [];
+  if (trend >= 80) pros.push(`Tendencia alcista: ${okN} de ${conds.length} señales a favor.`);
+  else if (trend <= 20) cons.push(`Tendencia bajista: solo ${okN} de ${conds.length} señales a favor.`);
+  else notes.push(`Tendencia mixta: ${okN} de ${conds.length} señales a favor.`);
+
+  if (ch7 != null) {
+    if (ch7 > 5) pros.push(`Subió ${ch7.toFixed(1)}% en 7 días.`);
+    else if (ch7 < -5) cons.push(`Bajó ${Math.abs(ch7).toFixed(1)}% en 7 días.`);
+    else notes.push(`Casi sin cambio en 7 días (${fmtPct(ch7, 1)}).`);
+  }
+  if (rsiD != null) {
+    if (rsiD >= 70) cons.push(`RSI diario en ${rsiD.toFixed(0)}: sobrecompra. Tras subidas rápidas son comunes las pausas o correcciones.`);
+    else if (rsiD <= 30) cons.push(`RSI diario en ${rsiD.toFixed(0)}: sobreventa. Puede rebotar, pero también seguir cayendo.`);
+    else if (rsiD >= 45) pros.push(`RSI diario en ${rsiD.toFixed(0)}: zona sana, sin exceso.`);
+    else notes.push(`RSI diario en ${rsiD.toFixed(0)}: momentum flojo.`);
+  }
+  if (rsiH != null && rsiH >= 70) cons.push(`RSI de 1 h en ${rsiH.toFixed(0)}: sobrecompra de corto plazo.`);
+  if (rsiH != null && rsiH <= 30) notes.push(`RSI de 1 h en ${rsiH.toFixed(0)}: sobreventa de corto plazo.`);
+  if (relVol != null) {
+    if (relVol >= 1.5) (x.ch24 >= 0 ? pros : cons).push(`Volumen ${relVol.toFixed(1)}× lo normal con el precio ${x.ch24 >= 0 ? 'al alza' : 'a la baja'}.`);
+    else if (relVol <= 0.6) notes.push(`Volumen bajo (${relVol.toFixed(1)}× lo normal): poco interés hoy.`);
+  }
+  if (fromHigh != null) {
+    if (fromHigh >= -3) notes.push('Cerca de su máximo de 30 días.');
+    else if (fromHigh <= -25) cons.push(`Está ${Math.abs(fromHigh).toFixed(0)}% por debajo de su máximo de 30 días.`);
+  }
+  if (vol != null) {
+    if (vol >= 5) cons.push(`Se mueve ±${vol.toFixed(1)}% en un día normal. Riesgo ${risk.toLowerCase()}.`);
+    else notes.push(`Se mueve ±${vol.toFixed(1)}% en un día normal.`);
+  }
+
+  const tags = [];
+  tags.push(trend >= 80 ? { t: 'Tendencia alcista', tone: 'up' } : trend <= 20 ? { t: 'Tendencia bajista', tone: 'down' } : { t: 'Tendencia mixta', tone: 'neutral' });
+  if (over) tags.push({ t: 'Sobrecomprada', tone: 'warn' });
+  if (under) tags.push({ t: 'Sobrevendida', tone: 'warn' });
+  if (relVol != null && relVol >= 2) tags.push({ t: `Volumen ${relVol.toFixed(1)}×`, tone: 'info' });
+  if (fromHigh != null && fromHigh >= -3) tags.push({ t: 'Cerca de máximos', tone: 'info' });
+  if (risk === 'Alto' || risk === 'Muy alto') tags.push({ t: `Riesgo ${risk.toLowerCase()}`, tone: 'warn' });
+
+  const summary = `${perfil}. ${okN} de ${conds.length} señales de tendencia a favor. RSI diario ${rsiD.toFixed(0)}.` +
+    (vol != null ? ` Riesgo ${risk.toLowerCase()} (±${vol.toFixed(1)}% en un día normal).` : '');
+
+  return {
+    fuerza, trend, impulse, rz, rsiH, rsiD, sma20h, sma50h, sma20d, sma50d, ch7, ch30, vol, relVol, hi30, fromHigh,
+    over, under, risk, perfil, tono, pros, cons, notes, tags, okN, nConds: conds.length, summary,
+  };
+}
+
+/* Resumen del día: list = [{ ch24, a }] */
+function marketBrief(list, btcA) {
+  const out = [];
+  const n = list.length;
+  if (!n) return out;
+  const up = list.filter((x) => x.ch24 > 0).length;
+  out.push({ tone: up / n >= 0.65 ? 'up' : up / n <= 0.35 ? 'down' : 'neutral', text: `${up} de ${n} monedas suben en las últimas 24 h.` });
+  if (btcA) {
+    out.push({
+      tone: btcA.fuerza >= 60 ? 'up' : btcA.fuerza <= 40 ? 'down' : 'neutral',
+      text: `Bitcoin: Fuerza ${btcA.fuerza}/100 (${btcA.perfil.toLowerCase()}). Las demás monedas suelen seguir su dirección.`,
+    });
+  }
+  const vols = list.map((x) => x.a && x.a.vol).filter((v) => v != null);
+  if (vols.length >= 5) {
+    const m = median(vols);
+    out.push({
+      tone: m >= 4 ? 'warn' : 'neutral',
+      text: `Volatilidad típica del grupo: ±${m.toFixed(1)}% por día.` + (m >= 4 ? ' Mercado movido: conviene usar posiciones más pequeñas.' : ''),
+    });
+  }
+  const ob = list.filter((x) => x.a && x.a.over).length;
+  if (ob >= 3) out.push({ tone: 'warn', text: `${ob} monedas con RSI alto (70 o más). Después de subidas rápidas son comunes las pausas.` });
+  return out;
+}
+
+/* ---------- cartera y riesgo ---------- */
+function positionSize({ capital, riskPct, entry, stop }) {
+  if (!(capital > 0) || !(riskPct > 0) || !(entry > 0) || !(stop > 0)) return null;
+  const loss = entry - stop;
+  if (!(loss > 0)) return { error: 'El stop-loss debe estar por debajo del precio de entrada.' };
+  const wantedRisk = (capital * riskPct) / 100;
+  let qty = wantedRisk / loss;
+  let capped = false;
+  if (qty * entry > capital) { qty = capital / entry; capped = true; }
+  const value = qty * entry;
+  return { wantedRisk, risk: qty * loss, qty, value, pctOfCapital: (value / capital) * 100, stopPct: (loss / entry) * 100, capped };
+}
+function plOf(pos, price) {
+  const cost = pos.qty * pos.entry, value = pos.qty * price;
+  return { cost, value, pl: value - cost, pct: cost > 0 ? (value / cost - 1) * 100 : null };
+}
+
+/* ---------- alertas ---------- */
+/* c = { price, ch1h, rsiH }  →  true | false | null (sin datos) */
+function alertCond(a, c) {
+  if (a.type === 'price') {
+    if (!(c.price > 0)) return null;
+    return a.dir === 'up' ? c.price >= a.target : c.price <= a.target;
+  }
+  if (a.type === 'move1h') {
+    if (c.ch1h == null) return null;
+    return a.dir === 'up' ? c.ch1h >= a.pct : a.dir === 'down' ? c.ch1h <= -a.pct : Math.abs(c.ch1h) >= a.pct;
+  }
+  if (a.type === 'rsi') {
+    if (c.rsiH == null) return null;
+    return a.dir === 'below' ? c.rsiH <= a.level : c.rsiH >= a.level;
+  }
+  return null;
+}
+/* Estados: waiting (la condición ya se cumplía al crear; espera a que deje de cumplirse) → armed → fired */
+function alertStep(a, c) {
+  if (a.state === 'fired') return { state: 'fired', fire: false };
+  const cond = alertCond(a, c);
+  if (cond === null) return { state: a.state, fire: false };
+  if (a.state === 'waiting') return { state: cond ? 'waiting' : 'armed', fire: false };
+  if (cond) return { state: 'fired', fire: true };
+  return { state: 'armed', fire: false };
+}
+function makeAlert(f, c) {
+  const id = 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const base = { id, sym: f.sym, type: f.type, created: Date.now(), state: 'armed' };
+  if (f.type === 'price') {
+    const t = f.target;
+    if (!(t > 0) || !isFinite(t)) return { error: 'Escribe un precio mayor que 0.' };
+    if (!(c.price > 0)) return { error: 'Todavía no hay precio en vivo de esta moneda. Espera un momento.' };
+    if (t === c.price) return { error: 'Ese es el precio actual. Elige otro valor.' };
+    const dir = t > c.price ? 'up' : 'down';
+    if (f.dir && f.dir !== dir) {
+      return { error: f.dir === 'up' ? `Para «Sube a», el precio debe ser mayor que el actual (${fmtPrice(c.price)}).` : `Para «Baja a», el precio debe ser menor que el actual (${fmtPrice(c.price)}).` };
+    }
+    return { alert: { ...base, dir, target: t } };
+  }
+  if (f.type === 'move1h') {
+    const p = f.pct;
+    if (!(p > 0) || p > 50) return { error: 'Escribe un porcentaje entre 0.1 y 50.' };
+    const dir = ['up', 'down', 'any'].includes(f.dir) ? f.dir : 'any';
+    const a = { ...base, dir, pct: p };
+    a.state = alertCond(a, c) === false ? 'armed' : 'waiting';
+    return { alert: a };
+  }
+  if (f.type === 'rsi') {
+    const l = f.level;
+    if (!(l >= 1 && l <= 99)) return { error: 'El RSI va de 1 a 99. Ejemplo: 30 o 70.' };
+    const a = { ...base, dir: f.dir === 'above' ? 'above' : 'below', level: l };
+    a.state = alertCond(a, c) === false ? 'armed' : 'waiting';
+    return { alert: a };
+  }
+  return { error: 'Tipo de alerta no válido.' };
+}
+function describeAlert(a) {
+  if (a.type === 'price') return (a.dir === 'up' ? 'Sube a ' : 'Baja a ') + fmtPrice(a.target) + ' USDT';
+  if (a.type === 'move1h') return a.dir === 'up' ? `Sube ${a.pct}% en 1 h` : a.dir === 'down' ? `Baja ${a.pct}% en 1 h` : `Se mueve ±${a.pct}% en 1 h`;
+  if (a.type === 'rsi') return `RSI (1 h) ${a.dir === 'below' ? 'baja de' : 'sube de'} ${a.level}`;
+  return '';
+}
+function alertMessage(a, c) {
+  const b = baseOf(a.sym);
+  if (a.type === 'price') {
+    return `${b} ${a.dir === 'up' ? 'subió' : 'bajó'} a ${fmtPrice(c.price)} USDT (objetivo ${fmtPrice(a.target)}).`;
+  }
+  if (a.type === 'move1h') {
+    return `${b} ${c.ch1h >= 0 ? 'subió' : 'bajó'} ${Math.abs(c.ch1h).toFixed(1)}% en la última hora. Precio: ${fmtPrice(c.price)} USDT.`;
+  }
+  if (a.type === 'rsi') {
+    const zone = a.dir === 'below' ? (a.level <= 30 ? ' Zona de sobreventa.' : '') : (a.level >= 70 ? ' Zona de sobrecompra.' : '');
+    return `${b}: RSI (1 h) en ${c.rsiH.toFixed(0)}, ${a.dir === 'below' ? 'por debajo' : 'por encima'} de ${a.level}.${zone}`;
+  }
+  return b;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    clamp, lerp, mean, median, baseOf, normSym, fmtPrice, fmtNum, fmtUSDT, fmtQty, fmtPct, fmtBig, ago, fmtAxisTime, parseNum,
+    sma, smaSeries, rsi, dailyVol, pctChange, zoneScore, analyze, marketBrief, positionSize, plOf,
+    alertCond, alertStep, makeAlert, describeAlert, alertMessage,
+  };
+}
+
+'use strict';
+/* ==========================================================================
+   Pulso · datos: estado, almacenamiento, API pública de Binance y modo ejemplo
+   Solo usa datos públicos de mercado. No pide claves ni se conecta a ninguna cuenta.
+   ========================================================================== */
+
+const STORE_KEY = /[?&]demo(=|&|$)/.test(location.search) ? 'pulso:demo:v1' : 'pulso:v1';
+const STABLE = new Set(['USDC', 'FDUSD', 'TUSD', 'USDP', 'DAI', 'BUSD', 'USDE', 'USD1', 'XUSD', 'AEUR', 'EUR', 'EURI', 'USDS', 'PYUSD', 'UST', 'RLUSD', 'BFUSD']);
+const IV_MS = { '15m': 9e5, '1h': 36e5, '4h': 144e5, '1d': 864e5 };
+const REST_HOSTS = ['https://data-api.binance.vision', 'https://api.binance.com', 'https://api1.binance.com', 'https://api2.binance.com'];
+const WS_HOSTS = ['wss://data-stream.binance.vision/stream', 'wss://stream.binance.com:9443/stream', 'wss://data-stream.binance.vision/ws'];
+const SYM_RE = /^[A-Z0-9]{3,20}$/;
+const UNIVERSE_SIZE = 30;
+
+const S = {
+  demo: false,
+  ready: false,
+  M: new Map(),   // símbolo -> { sym, base, last, open, high, low, vol, qvol, ch24, t, dir }
+  K: new Map(),   // símbolo -> { data: { '1h': {rows, at}, ... }, pend: {} }
+  W1: new Map(),  // símbolo -> cambio móvil de 1 h (%)
+  universe: [], allUSDT: [], searchSyms: [],
+  watch: [], alerts: [], positions: [], log: [],
+  settings: { sound: true, vibrate: true, wake: false, theme: 'auto' },
+  selected: null,
+  conn: { status: 'idle', lastMsg: 0, host: '' },
+  ui: { tab: 'mercado', filter: 'all', sort: 'vol', q: '' },
+};
+
+/* ---------- almacenamiento local (solo en este dispositivo) ---------- */
+function validAlert(a) {
+  return !!a && typeof a === 'object' && typeof a.id === 'string' && SYM_RE.test(a.sym) &&
+    ['price', 'move1h', 'rsi'].includes(a.type) && ['armed', 'waiting', 'fired'].includes(a.state) &&
+    (a.type !== 'price' || (a.target > 0 && (a.dir === 'up' || a.dir === 'down'))) &&
+    (a.type !== 'move1h' || (a.pct > 0 && ['up', 'down', 'any'].includes(a.dir))) &&
+    (a.type !== 'rsi' || (a.level >= 1 && a.level <= 99 && ['above', 'below'].includes(a.dir)));
+}
+function validPos(p) { return !!p && typeof p === 'object' && typeof p.id === 'string' && SYM_RE.test(p.sym) && p.qty > 0 && p.entry > 0; }
+function loadStore() {
+  try {
+    const o = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (!o) return;
+    if (Array.isArray(o.watch)) S.watch = o.watch.filter((s) => typeof s === 'string' && SYM_RE.test(s)).slice(0, 60);
+    if (Array.isArray(o.alerts)) S.alerts = o.alerts.filter(validAlert).slice(0, 100);
+    if (Array.isArray(o.positions)) S.positions = o.positions.filter(validPos).slice(0, 100);
+    if (Array.isArray(o.log)) S.log = o.log.filter((l) => l && typeof l.text === 'string' && l.t > 0).slice(0, 30);
+    if (o.settings && typeof o.settings === 'object') {
+      for (const k of ['sound', 'vibrate', 'wake']) if (typeof o.settings[k] === 'boolean') S.settings[k] = o.settings[k];
+      if (['auto', 'light', 'dark'].includes(o.settings.theme)) S.settings.theme = o.settings.theme;
+    }
+  } catch (e) { /* almacenamiento bloqueado o corrupto: se arranca vacío */ }
+}
+let saveTimer = 0;
+function saveStore() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ v: 1, watch: S.watch, alerts: S.alerts, positions: S.positions, log: S.log.slice(0, 30), settings: S.settings }));
+    } catch (e) { /* sin espacio o bloqueado */ }
+  }, 150);
+}
+
+/* ---------- actualización de pantalla por lotes ---------- */
+const dirty = new Set();
+let flushRaf = 0;
+function markDirty(sym) {
+  if (sym) dirty.add(sym);
+  if (!flushRaf) flushRaf = requestAnimationFrame(flushDirty);
+}
+function flushDirty() {
+  flushRaf = 0;
+  const syms = [...dirty];
+  dirty.clear();
+  UI.onData(syms);
+}
+
+/* ---------- REST ---------- */
+let restHost = 0;
+let rateUntil = 0;
+async function rest(path, params, timeout = 12000) {
+  if (Date.now() < rateUntil) throw Object.assign(new Error('Binance pidió bajar el ritmo. Reintentando en unos segundos.'), { rate: true });
+  const qs = params
+    ? '?' + Object.entries(params).map(([k, v]) => k + '=' + encodeURIComponent(typeof v === 'string' ? v : Array.isArray(v) ? JSON.stringify(v) : String(v))).join('&')
+    : '';
+  let lastErr;
+  for (let i = 0; i < REST_HOSTS.length; i++) {
+    const idx = (restHost + i) % REST_HOSTS.length;
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), timeout);
+    try {
+      const r = await fetch(REST_HOSTS[idx] + path + qs, { signal: ctl.signal });
+      clearTimeout(to);
+      if (r.status === 429 || r.status === 418) {
+        rateUntil = Date.now() + (Number(r.headers.get('retry-after')) || 10) * 1000;
+        throw Object.assign(new Error('Binance pidió bajar el ritmo.'), { rate: true });
+      }
+      if (r.status === 451 || r.status === 403) throw new Error('Acceso bloqueado desde esta red (' + r.status + ').');
+      if (!r.ok) {
+        const body = await r.json().catch(() => null);
+        throw Object.assign(new Error((body && body.msg) || 'Error ' + r.status), { fatal: true });
+      }
+      restHost = idx;
+      return await r.json();
+    } catch (e) {
+      clearTimeout(to);
+      lastErr = e;
+      if (e.fatal || e.rate) throw e;
+    }
+  }
+  throw lastErr || new Error('Sin conexión');
+}
+
+/* cola con prioridad y límite de peticiones simultáneas */
+const Q = { running: 0, max: 5, items: [] };
+function enqueue(fn, prio = 5) {
+  return new Promise((resolve, reject) => {
+    Q.items.push({ fn, prio, resolve, reject });
+    Q.items.sort((a, b) => a.prio - b.prio);
+    pump();
+  });
+}
+function pump() {
+  while (Q.running < Q.max && Q.items.length) {
+    const it = Q.items.shift();
+    Q.running++;
+    it.fn().then(it.resolve, it.reject).finally(() => { Q.running--; pump(); });
+  }
+}
+
+/* ---------- velas ---------- */
+async function loadKlines(sym, iv, limit, prio) {
+  if (S.demo) return demoKlines(sym, iv, limit);
+  const rows = await enqueue(() => rest('/api/v3/klines', { symbol: sym, interval: iv, limit }), prio);
+  if (!Array.isArray(rows)) throw new Error('Respuesta inesperada de Binance.');
+  return rows.map((r) => ({ t: r[0], o: +r[1], h: +r[2], l: +r[3], c: +r[4], v: +r[5], T: r[6], q: +r[7] }));
+}
+function slotFor(sym) {
+  let s = S.K.get(sym);
+  if (!s) { s = { data: {}, pend: {} }; S.K.set(sym, s); }
+  return s;
+}
+function klinesFresh(cur, iv) {
+  if (!cur || !cur.rows.length) return false;
+  const now = Date.now(), last = cur.rows[cur.rows.length - 1];
+  const ttl = iv === '1d' ? 20 * 60e3 : iv === '1h' ? 3 * 60e3 : 60e3;
+  if (now - cur.at > ttl) return false;
+  if (now > last.T + 3000 && now - cur.at > 15000) return false; // cerró una vela y aún no la traemos
+  return true;
+}
+function ensureKlines(sym, iv, opts = {}) {
+  const s = slotFor(sym), cur = s.data[iv];
+  if (!opts.force && klinesFresh(cur, iv)) return Promise.resolve(cur);
+  if (s.pend[iv]) return s.pend[iv];
+  const limit = iv === '1d' ? 90 : 200;
+  const p = loadKlines(sym, iv, limit, opts.prio == null ? 5 : opts.prio)
+    .then((rows) => { s.data[iv] = { rows, at: Date.now() }; return s.data[iv]; })
+    .finally(() => { delete s.pend[iv]; markDirty(sym); });
+  s.pend[iv] = p;
+  return p;
+}
+/* velas + precio en vivo en la última (sin modificar los datos guardados) */
+function liveSeries(sym, iv) {
+  const cur = S.K.get(sym) && S.K.get(sym).data[iv];
+  if (!cur || !cur.rows.length) return null;
+  const m = S.M.get(sym), rows = cur.rows.slice();
+  if (m && m.last > 0) {
+    const last = rows[rows.length - 1], now = Date.now();
+    if (now <= last.T) {
+      rows[rows.length - 1] = { ...last, c: m.last, h: Math.max(last.h, m.last), l: Math.min(last.l, m.last) };
+    } else {
+      const step = IV_MS[iv] || 36e5;
+      rows.push({ t: last.T + 1, o: last.c, h: Math.max(last.c, m.last), l: Math.min(last.c, m.last), c: m.last, v: 0, T: last.T + step, q: 0 });
+    }
+  }
+  return rows;
+}
+const AN = new Map();
+function analysisOf(sym) {
+  const m = S.M.get(sym), s = S.K.get(sym);
+  if (!m || !s || !s.data['1h'] || !s.data['1d'] || !(m.last > 0)) return null;
+  const key = m.last + '|' + s.data['1h'].at + '|' + s.data['1d'].at;
+  const c = AN.get(sym);
+  if (c && c.key === key) return c.a;
+  const h = liveSeries(sym, '1h'), d = liveSeries(sym, '1d');
+  const a = analyze({
+    price: m.last, ch24: m.ch24, qvol24: m.qvol,
+    h1c: h.map((r) => r.c), d1c: d.map((r) => r.c), d1h: d.map((r) => r.h), d1q: d.map((r) => r.q),
+  });
+  AN.set(sym, { key, a });
+  return a;
+}
+function rsiNow(sym) {
+  const h = liveSeries(sym, '1h');
+  return h && h.length > 15 ? rsi(h.map((r) => r.c), 14) : null;
+}
+
+/* ---------- mercado: lista de monedas ---------- */
+async function loadUniverse() {
+  const rows = S.demo ? demoTickers() : await rest('/api/v3/ticker/24hr', null, 25000);
+  if (!Array.isArray(rows)) throw new Error('Respuesta inesperada de Binance.');
+  const list = [];
+  for (const r of rows) {
+    const sym = r.symbol;
+    if (typeof sym !== 'string' || !sym.endsWith('USDT') || !SYM_RE.test(sym)) continue;
+    const base = baseOf(sym);
+    if (STABLE.has(base)) continue;
+    const last = +r.lastPrice, q = +r.quoteVolume;
+    if (!(last > 0) || !(q > 0)) continue;
+    const old = S.M.get(sym);
+    const m = { sym, base, last, open: +r.openPrice, high: +r.highPrice, low: +r.lowPrice, vol: +r.volume, qvol: q, ch24: +r.priceChangePercent, t: Date.now(), dir: 0 };
+    if (old && old.live) Object.assign(m, { live: true }); // conserva datos en vivo si ya llegaron
+    S.M.set(sym, m);
+    list.push(m);
+  }
+  if (list.length < 5) throw new Error('Binance no devolvió monedas USDT.');
+  list.sort((a, b) => b.qvol - a.qvol);
+  S.allUSDT = list.map((m) => m.sym);
+  S.universe = list.slice(0, UNIVERSE_SIZE).map((m) => m.sym);
+}
+
+function trackedSyms() {
+  const s = new Set([...S.universe, ...S.watch]);
+  S.alerts.forEach((a) => { if (a.state !== 'fired') s.add(a.sym); });
+  if (S.selected) s.add(S.selected);
+  return s;
+}
+async function refreshW1() {
+  const syms = new Set([...S.universe, ...S.watch]);
+  S.alerts.forEach((a) => { if (a.type === 'move1h' && a.state !== 'fired') syms.add(a.sym); });
+  if (S.selected) syms.add(S.selected);
+  const list = [...syms].filter((x) => S.M.has(x));
+  if (!list.length) return;
+  if (S.demo) {
+    list.forEach((sym) => {
+      const k = S.K.get(sym), rows = k && k.data['1h'] && k.data['1h'].rows, m = S.M.get(sym);
+      if (rows && rows.length > 2 && m) S.W1.set(sym, (m.last / rows[rows.length - 2].c - 1) * 100);
+    });
+  } else {
+    for (let i = 0; i < list.length; i += 50) {
+      const part = list.slice(i, i + 50);
+      const rows = await enqueue(() => rest('/api/v3/ticker', { symbols: part, windowSize: '1h' }), 6);
+      if (Array.isArray(rows)) rows.forEach((r) => { const v = +r.priceChangePercent; if (isFinite(v)) S.W1.set(r.symbol, v); });
+    }
+  }
+  evalMoveAlerts();
+  markDirty('*w1');
+}
+function maintenance() {
+  if (!S.ready) return;
+  for (const sym of trackedSyms()) {
+    const sel = S.selected === sym;
+    ensureKlines(sym, '1h', { prio: sel ? 1 : 7 }).catch(() => {});
+    ensureKlines(sym, '1d', { prio: sel ? 1 : 8 }).catch(() => {});
+  }
+}
+let trackTimer = 0;
+function onTrackedChanged() {
+  clearTimeout(trackTimer);
+  trackTimer = setTimeout(() => { wsSync(); maintenance(); refreshW1().catch(() => {}); }, 250);
+}
+
+/* ---------- WebSocket (precios en vivo) ---------- */
+const WS = { sock: null, i: 0, subs: new Set(), retry: 0, timer: 0, id: 1 };
+function wsWanted() {
+  // en segundo plano solo se siguen las monedas con alertas, cartera o la que está abierta (ahorra datos)
+  const s = new Set(document.hidden ? [] : [...S.universe, ...S.watch, ...S.searchSyms]);
+  S.alerts.forEach((a) => { if (a.state !== 'fired') s.add(a.sym); });
+  S.positions.forEach((p) => s.add(p.sym));
+  if (S.selected) s.add(S.selected);
+  return s;
+}
+function wsSync() {
+  if (S.demo) return;
+  const sock = WS.sock;
+  if (!sock || sock.readyState !== 1) return;
+  const want = wsWanted();
+  const add = [...want].filter((s) => !WS.subs.has(s)), del = [...WS.subs].filter((s) => !want.has(s));
+  const send = (method, list) => {
+    for (let i = 0; i < list.length; i += 40) {
+      sock.send(JSON.stringify({ method, params: list.slice(i, i + 40).map((s) => s.toLowerCase() + '@miniTicker'), id: WS.id++ }));
+    }
+  };
+  if (add.length) { send('SUBSCRIBE', add); add.forEach((s) => WS.subs.add(s)); }
+  if (del.length) { send('UNSUBSCRIBE', del); del.forEach((s) => WS.subs.delete(s)); }
+}
+function wsConnect() {
+  if (S.demo) return;
+  clearTimeout(WS.timer);
+  if (WS.sock && WS.sock.readyState <= 1) return;
+  const url = WS_HOSTS[WS.i % WS_HOSTS.length];
+  S.conn.status = 'connecting';
+  S.conn.host = url;
+  let sock;
+  try { sock = new WebSocket(url); } catch (e) { wsRetry(); return; }
+  WS.sock = sock;
+  WS.subs = new Set();
+  sock.onopen = () => { if (WS.sock !== sock) return; S.conn.status = 'open'; wsSync(); };
+  sock.onmessage = (ev) => {
+    if (WS.sock !== sock) return;
+    S.conn.lastMsg = Date.now();
+    S.conn.status = 'live';
+    WS.retry = 0;
+    let msg;
+    try { msg = JSON.parse(ev.data); } catch (e) { return; }
+    const d = msg && msg.data ? msg.data : msg;
+    if (d && d.e === '24hrMiniTicker') onTicker(d);
+  };
+  sock.onerror = () => {};
+  sock.onclose = () => { if (WS.sock === sock) { WS.sock = null; S.conn.status = 'down'; wsRetry(); } };
+}
+function wsRetry() {
+  WS.retry++;
+  if (WS.retry % 2 === 0) WS.i++; // alterna de servidor si falla seguido
+  WS.timer = setTimeout(wsConnect, Math.min(30000, 1000 * 2 ** Math.min(WS.retry, 5)));
+}
+function wsRestart() {
+  const sock = WS.sock;
+  WS.sock = null;
+  if (sock) { try { sock.close(); } catch (e) { /* ya cerrado */ } }
+  S.conn.status = 'connecting';
+  wsConnect();
+}
+function wsWatchdog() {
+  if (S.demo) return;
+  if (S.conn.status === 'live' && Date.now() - S.conn.lastMsg > 20000) wsRestart();
+}
+function onTicker(d) {
+  const sym = d.s;
+  if (typeof sym !== 'string') return;
+  const last = +d.c;
+  if (!(last > 0)) return;
+  let m = S.M.get(sym);
+  if (!m) { m = { sym, base: baseOf(sym), last: NaN, dir: 0 }; S.M.set(sym, m); }
+  m.dir = isFinite(m.last) ? Math.sign(last - m.last) : 0;
+  m.last = last; m.open = +d.o; m.high = +d.h; m.low = +d.l; m.vol = +d.v; m.qvol = +d.q;
+  m.ch24 = m.open > 0 ? (last / m.open - 1) * 100 : 0;
+  m.t = Date.now();
+  m.live = true;
+  markDirty(sym);
+  evalAlertsFor(sym);
+}
+
+/* ---------- modo ejemplo (precios simulados; solo para ver cómo funciona la app) ---------- */
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function gauss(r) { return Math.sqrt(-2 * Math.log(r() || 1e-9)) * Math.cos(2 * Math.PI * r()); }
+const DEMO_COINS = [['BTC', 64000], ['ETH', 3100], ['BNB', 590], ['SOL', 145], ['XRP', 0.52], ['DOGE', 0.16], ['ADA', 0.45], ['TRX', 0.12], ['AVAX', 34], ['LINK', 14.2], ['DOT', 6.8], ['LTC', 82], ['BCH', 440], ['NEAR', 5.6], ['UNI', 9.8], ['ATOM', 7.9], ['XLM', 0.11], ['ETC', 26], ['FIL', 5.1], ['APT', 8.7], ['ARB', 0.92], ['OP', 2.1], ['INJ', 24], ['SUI', 1.6], ['PEPE', 0.0000105], ['SHIB', 0.0000175], ['AAVE', 160], ['HBAR', 0.075], ['ICP', 11.5], ['TON', 6.1], ['POL', 0.48], ['RENDER', 7.3], ['TIA', 6.2], ['WLD', 2.4]];
+const DEMO_PARAMS = {};
+function demoParams(sym) {
+  if (!DEMO_PARAMS[sym]) {
+    const r = rng(hashStr(sym));
+    DEMO_PARAMS[sym] = { sigmaH: 0.003 + r() * 0.011, drift: (r() - 0.45) * 0.0025, relVol: 0.6 + r() * 2.0, q: 2e7 * Math.pow(10, r() * 1.6) };
+  }
+  return DEMO_PARAMS[sym];
+}
+function demoTickers() {
+  return DEMO_COINS.map(([b, p], i) => {
+    const sym = b + 'USDT', r = rng(hashStr(sym + 'x')), prm = demoParams(sym);
+    const ch = (r() - 0.45) * 12, last = p * (1 + (r() - 0.5) * 0.01), open = last / (1 + ch / 100);
+    const q = i === 0 ? 3e9 : i === 1 ? 1.5e9 : 4e8 * Math.pow(i, -0.9) * (0.6 + r() * 0.8) * (prm.relVol / 1.4);
+    return { symbol: sym, lastPrice: String(last), openPrice: String(open), highPrice: String(Math.max(last, open) * 1.02), lowPrice: String(Math.min(last, open) * 0.98), volume: String(q / last), quoteVolume: String(q), priceChangePercent: String(ch) };
+  });
+}
+const DEMO_K = {};
+function demoKlines(sym, iv, limit) {
+  const m = S.M.get(sym), step = IV_MS[iv] || 36e5, prm = demoParams(sym);
+  const now = Date.now(), lastOpen = Math.floor(now / step) * step;
+  const key = sym + iv;
+  if (!DEMO_K[key]) {
+    const r = rng(hashStr(key)), n = limit, f = step / 36e5;
+    const sigma = prm.sigmaH * Math.sqrt(f), drift = prm.drift * f;
+    const p = new Array(n); p[n - 1] = m ? m.last : 1;
+    for (let i = n - 1; i > 0; i--) p[i - 1] = p[i] / (1 + drift + sigma * gauss(r));
+    /* que el precio de hace 24 h coincida con el «open» del ticker: así la línea y el % del día cuentan lo mismo */
+    if (m && m.open > 0) {
+      const j = n - 1 - Math.max(1, Math.round(864e5 / step));
+      if (j >= 0) {
+        const g = Math.log(m.open / p[j]);
+        for (let i = 0; i < n - 1; i++) p[i] *= Math.exp(g * (i <= j ? 1 : (n - 1 - i) / (n - 1 - j)));
+      }
+    }
+    const rows = [];
+    for (let i = 0; i < n; i++) {
+      const o = i ? p[i - 1] : p[0] * (1 - drift), c = p[i];
+      const hi = Math.max(o, c) * (1 + Math.abs(gauss(r)) * sigma * 0.4), lo = Math.min(o, c) * (1 - Math.abs(gauss(r)) * sigma * 0.4);
+      const dayQ = (m ? m.qvol : prm.q) / prm.relVol;
+      const q = dayQ * (f / 24) * (0.7 + r() * 0.6);
+      rows.push({ t: lastOpen - (n - 1 - i) * step, o, h: hi, l: lo, c, v: q / c, T: lastOpen - (n - 1 - i) * step + step - 1, q });
+    }
+    DEMO_K[key] = rows;
+  }
+  const rows = DEMO_K[key].map((r) => ({ ...r }));
+  const last = rows[rows.length - 1];
+  if (m) { last.c = m.last; last.h = Math.max(last.h, m.last); last.l = Math.min(last.l, m.last); }
+  last.t = lastOpen; last.T = lastOpen + step - 1;
+  return rows;
+}
+let demoTimer = 0;
+function demoStart() {
+  clearInterval(demoTimer);
+  S.conn.status = 'live';
+  S.conn.lastMsg = Date.now();
+  demoTimer = setInterval(() => {
+    S.conn.lastMsg = Date.now();
+    for (const sym of wsWanted()) {
+      const m = S.M.get(sym);
+      if (!m) continue;
+      const r = Math.random, prm = demoParams(sym);
+      const last = m.last * (1 + (r() - 0.5) * 2 * Math.min(0.004, prm.sigmaH * 0.35));
+      onTicker({ e: '24hrMiniTicker', s: sym, c: String(last), o: String(m.open), h: String(Math.max(m.high, last)), l: String(Math.min(m.low, last)), v: String(m.vol), q: String(m.qvol) });
+    }
+  }, 1000);
+}
+function demoStop() { clearInterval(demoTimer); demoTimer = 0; }
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { validAlert, validPos };
+
+'use strict';
+/* ==========================================================================
+   Pulso · alertas y avisos
+   Las alertas se revisan en esta página mientras esté abierta (no hay servidor).
+   Aviso: en pantalla + sonido + vibración + notificación del sistema (si se permite).
+   ========================================================================== */
+
+function alertCtx(sym) {
+  const m = S.M.get(sym);
+  const needRsi = S.alerts.some((a) => a.sym === sym && a.type === 'rsi' && a.state !== 'fired');
+  return { price: m ? m.last : null, ch1h: S.W1.has(sym) ? S.W1.get(sym) : null, rsiH: needRsi ? rsiNow(sym) : null };
+}
+function evalAlertsFor(sym) {
+  let ctx = null, changed = false;
+  for (const a of S.alerts) {
+    if (a.sym !== sym || a.state === 'fired') continue;
+    ctx = ctx || alertCtx(sym);
+    const r = alertStep(a, ctx);
+    if (r.state !== a.state) { a.state = r.state; changed = true; }
+    if (r.fire) fireAlert(a, ctx);
+  }
+  if (changed) { saveStore(); if (UI.refreshAlerts) UI.refreshAlerts(); }
+}
+function evalMoveAlerts() {
+  new Set(S.alerts.filter((a) => a.type === 'move1h' && a.state !== 'fired').map((a) => a.sym)).forEach(evalAlertsFor);
+}
+function fireAlert(a, ctx) {
+  a.firedAt = Date.now();
+  a.firedPrice = ctx.price;
+  const text = alertMessage(a, ctx);
+  S.log.unshift({ t: a.firedAt, text, sym: a.sym });
+  S.log = S.log.slice(0, 30);
+  saveStore();
+  notify(baseOf(a.sym) + ' · alerta', text, a.sym);
+}
+
+/* ---------- avisos ---------- */
+let swReg = null;
+function setSwReg(r) { swReg = r; }
+let titleTimer = 0;
+const BASE_TITLE = document.title;
+function flashTitle(msg) {
+  clearInterval(titleTimer);
+  let on = false, n = 0;
+  titleTimer = setInterval(() => {
+    on = !on; n++;
+    document.title = on ? '● ' + msg : BASE_TITLE;
+    if (n > 20 || (!document.hidden && document.hasFocus())) { clearInterval(titleTimer); document.title = BASE_TITLE; }
+  }, 900);
+}
+async function notify(title, body, sym, force) {
+  if (UI.toast) UI.toast(title, body, S.M.has(sym) ? sym : null);
+  if (S.settings.sound) beep();
+  if (S.settings.vibrate && navigator.vibrate) { try { navigator.vibrate([200, 100, 200]); } catch (e) { /* no disponible */ } }
+  const away = !!force || document.hidden || !document.hasFocus();
+  if (away) flashTitle(title);
+  if (away && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    try {
+      let reg = swReg;
+      if (!reg && navigator.serviceWorker) reg = await navigator.serviceWorker.getRegistration();
+      if (reg && reg.showNotification) await reg.showNotification(title, { body, tag: 'pulso-' + sym, renotify: true });
+      else new Notification(title, { body, tag: 'pulso-' + sym });
+    } catch (e) { /* el navegador no permitió la notificación */ }
+  }
+}
+
+/* sonido: el navegador solo lo permite después de un toque del usuario */
+let AC = null;
+function audioCtx() {
+  if (!AC) {
+    const C = window.AudioContext || window.webkitAudioContext;
+    if (C) { try { AC = new C(); } catch (e) { AC = null; } }
+  }
+  return AC;
+}
+function unlockAudio() {
+  const c = audioCtx();
+  if (c && c.state === 'suspended') c.resume().catch(() => {});
+}
+function beep() {
+  const c = audioCtx();
+  if (!c) return;
+  if (c.state === 'suspended') c.resume().catch(() => {});
+  const t0 = c.currentTime;
+  [880, 1175].forEach((f, i) => {
+    const o = c.createOscillator(), g = c.createGain(), t = t0 + i * 0.2;
+    o.type = 'sine';
+    o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + 0.2);
+  });
+}
+
+/* pantalla encendida mientras la app está visible */
+let wakeLock = null;
+async function setWake(on) {
+  try {
+    if (on) {
+      if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return false;
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+      return true;
+    }
+    if (wakeLock) { await wakeLock.release(); wakeLock = null; }
+    return true;
+  } catch (e) { wakeLock = null; return false; }
+}
+function notifSupported() { return typeof Notification !== 'undefined'; }
+async function askNotifPermission() {
+  if (!notifSupported()) return 'unsupported';
+  try { return await Notification.requestPermission(); } catch (e) { return Notification.permission; }
+}
+
+'use strict';
+/* ==========================================================================
+   Pulso · gráfico (canvas) y minigráficos (SVG)
+   ========================================================================== */
+
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function chartColors() {
+  return { bg: cssVar('--surface'), ink: cssVar('--ink'), muted: cssVar('--muted'), line: cssVar('--line'), up: cssVar('--up'), down: cssVar('--down'), accent: cssVar('--accent-text'), warn: cssVar('--warn'), tagInk: cssVar('--tag-ink') || '#fff' };
+}
+function withAlpha(hex, a) {
+  const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return hex;
+  let s = m[1];
+  if (s.length === 3) s = s.split('').map((c) => c + c).join('');
+  const n = parseInt(s, 16);
+  return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
+}
+function niceTicks(lo, hi, count) {
+  const span = hi - lo;
+  if (!(span > 0)) return [];
+  const raw = span / count, mag = Math.pow(10, Math.floor(Math.log10(raw))), norm = raw / mag;
+  const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step, i = 0; v <= hi && i < 20; v += step, i++) out.push(+v.toPrecision(12));
+  out.step = step;
+  return out;
+}
+function fmtAxis(v, step) {
+  const dec = step >= 1 ? 0 : Math.min(8, Math.ceil(-Math.log10(step) - 1e-9));
+  return v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+function sparkPath(vals, w = 72, hgt = 24, pad = 2) {
+  const n = vals.length;
+  if (n < 2) return '';
+  let lo = Infinity, hi = -Infinity;
+  for (const v of vals) { if (v < lo) lo = v; if (v > hi) hi = v; }
+  const span = hi - lo || 1;
+  let d = '';
+  for (let i = 0; i < n; i++) {
+    const x = (i / (n - 1)) * w, y = pad + (1 - (vals[i] - lo) / span) * (hgt - 2 * pad);
+    d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }
+  return d;
+}
+
+/* rows: velas completas (la última ya incluye el precio en vivo).
+   o = { type:'line'|'candle', iv, window, hover, levels:[{price,label,kind}] } */
+function drawChart(cv, rows, o) {
+  const ctx = cv.getContext('2d');
+  if (!ctx) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  const bw = Math.round(W * dpr), bh = Math.round(H * dpr);
+  if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const C = chartColors();
+  const mono = cssVar('--f-mono') || 'monospace';
+  ctx.font = '11px ' + mono;
+  ctx.textBaseline = 'middle';
+
+  if (!rows || rows.length < 3) {
+    ctx.fillStyle = C.muted; ctx.textAlign = 'center';
+    ctx.fillText('Cargando gráfico…', W / 2, H / 2);
+    cv._m = null;
+    return;
+  }
+  const from = Math.max(0, rows.length - (o.window || 120));
+  const view = rows.slice(from), n = view.length;
+  const smaAll = smaSeries(rows.map((r) => r.c), 20), smaView = smaAll.slice(from);
+  const padL = 6, padR = 72, padT = 16, padB = 22;
+  const iw = W - padL - padR, ih = H - padT - padB;
+  const candle = o.type === 'candle';
+
+  let lo = Infinity, hi = -Infinity;
+  for (const r of view) {
+    const a = candle ? r.l : r.c, b = candle ? r.h : r.c;
+    if (a < lo) lo = a;
+    if (b > hi) hi = b;
+  }
+  const span0 = hi - lo || hi * 0.01;
+  const levels = (o.levels || []).filter((l) => l.price > lo - span0 * 0.25 && l.price < hi + span0 * 0.25);
+  levels.forEach((l) => { lo = Math.min(lo, l.price); hi = Math.max(hi, l.price); });
+  const pad = (hi - lo) * 0.08 || hi * 0.005;
+  lo -= pad; hi += pad;
+  const X = (i) => padL + ((i + 0.5) / n) * iw;
+  const Y = (v) => padT + ((hi - v) / (hi - lo)) * ih;
+
+  // cuadrícula y precios
+  ctx.lineWidth = 1;
+  ctx.textAlign = 'left';
+  const ticks = niceTicks(lo, hi, 4);
+  const pyTag = Y(view[n - 1].c);
+  for (const v of ticks) {
+    const y = Math.round(Y(v)) + 0.5;
+    ctx.strokeStyle = C.line;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    if (Math.abs(y - pyTag) > 10) { ctx.fillStyle = C.muted; ctx.fillText(fmtAxis(v, ticks.step), W - padR + 6, y); }
+  }
+  // tiempos
+  const multi = view[n - 1].t - view[0].t > 864e5;
+  const k = Math.max(2, Math.min(5, Math.floor(iw / 95)));
+  ctx.fillStyle = C.muted;
+  for (let j = 0; j < k; j++) {
+    const i = Math.round((j * (n - 1)) / (k - 1));
+    ctx.textAlign = j === 0 ? 'left' : j === k - 1 ? 'right' : 'center';
+    const x = j === 0 ? padL : j === k - 1 ? W - padR : X(i);
+    ctx.fillText(fmtAxisTime(view[i].t, o.iv, multi), x, H - padB / 2 + 1);
+  }
+
+  const lastC = view[n - 1].c, firstC = view[0].c;
+  const dirCol = lastC >= firstC ? C.up : C.down;
+
+  if (!candle) {
+    const g = ctx.createLinearGradient(0, padT, 0, padT + ih);
+    g.addColorStop(0, withAlpha(dirCol, 0.22));
+    g.addColorStop(1, withAlpha(dirCol, 0));
+    ctx.beginPath();
+    view.forEach((r, i) => (i ? ctx.lineTo(X(i), Y(r.c)) : ctx.moveTo(X(i), Y(r.c))));
+    ctx.lineTo(X(n - 1), padT + ih); ctx.lineTo(X(0), padT + ih); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath();
+    view.forEach((r, i) => (i ? ctx.lineTo(X(i), Y(r.c)) : ctx.moveTo(X(i), Y(r.c))));
+    ctx.strokeStyle = dirCol; ctx.lineWidth = 1.8; ctx.lineJoin = 'round'; ctx.stroke();
+  } else {
+    const cw = Math.max(1, Math.min(10, (iw / n) * 0.68));
+    view.forEach((r, i) => {
+      const col = r.c >= r.o ? C.up : C.down, x = X(i);
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, Y(r.h)); ctx.lineTo(Math.round(x) + 0.5, Y(r.l)); ctx.stroke();
+      const y1 = Y(Math.max(r.o, r.c)), y2 = Y(Math.min(r.o, r.c));
+      ctx.fillRect(x - cw / 2, y1, cw, Math.max(1, y2 - y1));
+    });
+  }
+  // media móvil de 20 velas
+  ctx.beginPath();
+  let started = false;
+  smaView.forEach((v, i) => { if (v == null) return; if (!started) { ctx.moveTo(X(i), Y(v)); started = true; } else ctx.lineTo(X(i), Y(v)); });
+  ctx.strokeStyle = C.accent; ctx.lineWidth = 1.2; ctx.setLineDash([]); ctx.globalAlpha = 0.9; ctx.stroke(); ctx.globalAlpha = 1;
+
+  // niveles propios: alertas y precio de compra
+  ctx.font = '10px ' + mono;
+  for (const l of levels) {
+    const y = Math.round(Y(l.price)) + 0.5;
+    ctx.setLineDash(l.kind === 'entry' ? [1, 3] : [5, 4]);
+    ctx.strokeStyle = l.kind === 'entry' ? C.muted : C.warn; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = l.kind === 'entry' ? C.muted : C.warn; ctx.textAlign = 'left';
+    ctx.fillText(l.label, padL + 2, y - 7);
+  }
+  ctx.font = '11px ' + mono;
+
+  // precio actual
+  const py = Y(lastC);
+  ctx.setLineDash([2, 3]); ctx.strokeStyle = dirCol; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(padL, Math.round(py) + 0.5); ctx.lineTo(W - padR, Math.round(py) + 0.5); ctx.stroke(); ctx.setLineDash([]);
+  const label = fmtPrice(lastC);
+  const tw = ctx.measureText(label).width + 8;
+  const ty = clamp(py, padT + 7, padT + ih - 7);
+  ctx.fillStyle = dirCol;
+  ctx.fillRect(W - padR + 2, ty - 8, Math.min(tw, padR - 2), 16);
+  ctx.fillStyle = C.tagInk; ctx.textAlign = 'left';
+  ctx.fillText(label, W - padR + 5, ty + 0.5);
+
+  // cursor
+  if (o.hover != null && o.hover >= 0 && o.hover < n) {
+    const r = view[o.hover], x = X(o.hover);
+    ctx.strokeStyle = C.muted; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(Math.round(x) + 0.5, padT); ctx.lineTo(Math.round(x) + 0.5, padT + ih); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(x, Y(r.c), 3.2, 0, 6.283); ctx.fill();
+    const txt = fmtFull(r.t) + '   ' + (candle ? `A ${fmtPrice(r.o)}  Máx ${fmtPrice(r.h)}  Mín ${fmtPrice(r.l)}  C ${fmtPrice(r.c)}` : fmtPrice(r.c));
+    ctx.font = '11px ' + mono; ctx.textAlign = 'left';
+    const w = Math.min(ctx.measureText(txt).width + 12, W - 8);
+    ctx.fillStyle = C.bg; ctx.globalAlpha = 0.92; ctx.fillRect(4, 1, w, 16); ctx.globalAlpha = 1;
+    ctx.fillStyle = C.ink; ctx.fillText(txt, 10, 9.5);
+  }
+  cv._m = { padL, iw, n, from };
+}
+function chartIndexAt(cv, clientX) {
+  const m = cv._m;
+  if (!m) return null;
+  const x = clientX - cv.getBoundingClientRect().left;
+  return clamp(Math.floor(((x - m.padL) / m.iw) * m.n), 0, m.n - 1);
+}
+
+'use strict';
+/* ==========================================================================
+   Pulso · interfaz: utilidades, hojas, avisos en pantalla y estructura general
+   ========================================================================== */
+
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+function h(tag, a, ...kids) {
+  const e = document.createElement(tag);
+  if (a) {
+    for (const k in a) {
+      const v = a[k];
+      if (v == null || v === false) continue;
+      if (k === 'class') e.className = v;
+      else if (k === 'text') e.textContent = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : String(v));
+    }
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) e.append(c.nodeType ? c : String(c));
+  return e;
+}
+const ICONS = {
+  market: '<path d="M4 20V11M10 20V4M16 20v-7M22 20H2"/>',
+  bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+  wallet: '<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 0 2 1h13"/>',
+  tune: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
+  star: '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+};
+function svgOf(name) { return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">' + (ICONS[name] || '') + '</svg>'; }
+function icon(name) { const s = document.createElement('span'); s.className = 'ico'; s.innerHTML = svgOf(name); return s; }
+function hydrateIcons(root) { $$('[data-icon]', root).forEach((el) => { el.innerHTML = svgOf(el.dataset.icon); }); }
+function setText(el, t) { if (el.textContent !== t) el.textContent = t; }
+const coinName = (sym) => NAMES[baseOf(sym)] || baseOf(sym);
+const toneOf = (v) => (v > 0 ? 'up' : v < 0 ? 'down' : '');
+let uidN = 0;
+const uid = (p) => (p || 'u') + ++uidN;
+
+/* ---------- hojas (detalle de moneda y ajustes) ---------- */
+let ignorePop = false;
+function openSheet(el, focusSel) {
+  if (!el.hidden) return;
+  el._opener = document.activeElement;
+  el.hidden = false;
+  document.body.style.overflow = 'hidden';
+  $('#app').inert = true; $('#tabsNav').inert = true;
+  let pushed = false;
+  try { history.pushState({ pulsoSheet: el.id }, ''); pushed = true; } catch (e) { /* sin historial */ }
+  el._pushed = pushed;
+  const f = (focusSel && $(focusSel, el)) || $('button', el);
+  if (f) setTimeout(() => f.focus({ preventScroll: true }), 30);
+}
+function closeSheet(el, viaPop) {
+  if (el.hidden) return;
+  el.hidden = true;
+  if (!$('.sheet:not([hidden])')) { document.body.style.overflow = ''; $('#app').inert = false; $('#tabsNav').inert = false; }
+  const op = el._opener;
+  el._opener = null;
+  if (op && op.focus && document.contains(op)) op.focus({ preventScroll: true });
+  if (el._pushed && !viaPop) { ignorePop = true; try { history.back(); } catch (e) { ignorePop = false; } }
+  el._pushed = false;
+  if (el.id === 'sheet') VCoin.onClose();
+}
+
+/* ---------- estructura general ---------- */
+const TABS = [['mercado', 'Mercado', 'market'], ['alertas', 'Alertas', 'bell'], ['cartera', 'Cartera', 'wallet'], ['aprende', 'Aprender', 'book']];
+const UI = {
+  tab: 'mercado',
+  unseen: 0,
+  status: '',
+  init() {
+    hydrateIcons(document);
+    const box = $('#tabs');
+    TABS.forEach(([id, label, ic]) => {
+      const b = h('button', { class: 'tab', type: 'button', 'data-tab': id, onclick: () => UI.setTab(id) }, icon(ic), h('span', { text: label }));
+      if (id === 'alertas') { this.badgeEl = h('span', { class: 'badge', hidden: true }); b.append(this.badgeEl); }
+      box.append(b);
+    });
+    VMarket.init(); VAlerts.init(); VWallet.init(); VLearn.init(); VCoin.init(); VSettings.init();
+    $('#btnSettings').addEventListener('click', () => VSettings.open());
+    $('#stBack').addEventListener('click', () => closeSheet($('#settings')));
+    $$('.sheet').forEach((sh) => $('.sheet-scrim', sh).addEventListener('click', () => closeSheet(sh)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const open = $$('.sheet:not([hidden])').pop();
+      if (open) closeSheet(open);
+    });
+    window.addEventListener('popstate', () => {
+      if (ignorePop) { ignorePop = false; return; }
+      const open = $$('.sheet:not([hidden])').pop();
+      if (open) closeSheet(open, true);
+    });
+    document.addEventListener('pointerdown', unlockAudio, { passive: true });
+    UI.setTab('mercado');
+    UI.applyTheme();
+    if (window.matchMedia) {
+      const mq = matchMedia('(prefers-color-scheme: dark)');
+      const on = () => { UI.applyTheme(); };
+      if (mq.addEventListener) mq.addEventListener('change', on);
+    }
+  },
+  setTab(id) {
+    UI.tab = id;
+    TABS.forEach(([t]) => { $('#v-' + t).hidden = t !== id; });
+    $$('.tab').forEach((b) => { if (b.dataset.tab === id) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (id === 'alertas') { UI.unseen = 0; UI.renderBadge(); VAlerts.render(); }
+    if (id === 'cartera') VWallet.render();
+    if (id === 'mercado') VMarket.render(true);
+    window.scrollTo(0, 0);
+  },
+  renderBadge() {
+    if (!this.badgeEl) return;
+    this.badgeEl.hidden = !UI.unseen;
+    this.badgeEl.textContent = UI.unseen > 9 ? '9+' : String(UI.unseen);
+  },
+  applyTheme() {
+    const t = S.settings.theme, r = document.documentElement;
+    if (t === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', t);
+    const dark = t === 'dark' || (t === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+    const meta = $('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', dark ? '#0B1016' : '#F2F4F7');
+    requestAnimationFrame(() => VCoin.draw());
+  },
+  updateStatus() {
+    const c = S.conn, now = Date.now();
+    let st, txt;
+    if (S.demo) { st = 'demo'; txt = 'Ejemplo · precios simulados'; }
+    else if (!S.ready) { st = 'connecting'; txt = 'Conectando…'; }
+    else if (c.status === 'live' && now - c.lastMsg < 8000) { st = 'live'; txt = 'En vivo'; }
+    else if (c.pollAt && now - c.pollAt < 15000) { st = 'poll'; txt = 'Se actualiza cada 5 s'; }
+    else if (c.status === 'down') { st = 'down'; txt = 'Sin conexión · reintentando'; }
+    else { st = 'connecting'; txt = 'Conectando…'; }
+    const key = st + txt;
+    if (key === UI.status) return;
+    UI.status = key;
+    $('#pulse').dataset.s = st;
+    setText($('#statusTxt'), txt);
+  },
+  banner(kind, text, label, fn) {
+    const b = $('#banner');
+    b.className = 'banner' + (kind ? ' ' + kind : '');
+    b.replaceChildren(h('span', { text }));
+    if (label) b.append(h('button', { class: 'btn sm', type: 'button', text: label, onclick: fn }));
+    b.hidden = false;
+  },
+  clearBanner() { $('#banner').hidden = true; },
+  toast(title, body, sym) {
+    const box = $('#toasts');
+    const t = h('div', { class: 'toast', role: 'status' },
+      h('div', { class: 'toast-t', text: title }),
+      h('div', { class: 'toast-b', text: body }),
+      h('button', { class: 'toast-x', type: 'button', 'aria-label': 'Cerrar aviso', onclick: (e) => { e.stopPropagation(); t.remove(); } }, icon('close')));
+    t.addEventListener('click', () => { t.remove(); if (sym) UI.openCoin(sym); });
+    box.prepend(t);
+    while (box.children.length > 4) box.lastChild.remove();
+    setTimeout(() => t.remove(), 12000);
+    if (UI.tab !== 'alertas') { UI.unseen++; UI.renderBadge(); }
+  },
+  flash(msg) {
+    const box = $('#toasts');
+    const t = h('div', { class: 'toast info', role: 'status', text: msg });
+    t.addEventListener('click', () => t.remove());
+    box.prepend(t);
+    while (box.children.length > 4) box.lastChild.remove();
+    setTimeout(() => t.remove(), 3500);
+  },
+  openCoin(sym) {
+    if (!SYM_RE.test(sym)) return;
+    closeSheet($('#settings'), true);
+    openSheet($('#sheet'), '#csBack');
+    VCoin.open(sym);
+  },
+  closeCoin() { closeSheet($('#sheet')); },
+  toggleWatch(sym) {
+    const i = S.watch.indexOf(sym);
+    if (i >= 0) S.watch.splice(i, 1);
+    else if (S.watch.length >= 60) { UI.flash('Máximo 60 favoritas.'); return; } else S.watch.push(sym);
+    saveStore();
+    onTrackedChanged();
+    VMarket.render(true);
+    VCoin.syncStar();
+  },
+  refreshAlerts() {
+    if (UI.tab === 'alertas') VAlerts.render();
+    VCoin.draw();
+  },
+  onData(syms) {
+    UI.updateStatus();
+    VMarket.onData(syms);
+    if (S.selected) VCoin.onData(syms);
+    if (UI.tab === 'alertas') VAlerts.onData(syms);
+    if (UI.tab === 'cartera') VWallet.onData(syms);
+  },
+  tick(n) {
+    UI.updateStatus();
+    VMarket.tick(n);
+    VCoin.tick(n);
+    if (UI.tab === 'alertas' && n % 20 === 0) VAlerts.render();
+    if (!$('#settings').hidden && n % 2 === 0) VSettings.tick();
+  },
+  fillCoinList() {
+    const dl = $('#coinlist');
+    dl.replaceChildren(...S.allUSDT.slice(0, 400).map((s) => h('option', { value: baseOf(s), label: NAMES[baseOf(s)] || '' })));
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · pantalla Mercado: resumen, radar, búsqueda y lista de monedas
+   ========================================================================== */
+
+const SVGNS = 'http://www.w3.org/2000/svg';
+const SORTS = [['vol', 'Volumen'], ['fuerza', 'Fuerza'], ['up', 'Suben'], ['down', 'Bajan']];
+const RADAR = [
+  { id: 'top', title: 'Mayor Fuerza' },
+  { id: 'hot', title: 'RSI alto (recalentadas)' },
+  { id: 'cold', title: 'RSI bajo (cayeron mucho)' },
+];
+const RADAR_NOTE = 'Fuerza resume tendencia, impulso y RSI de lo que ya pasó. RSI alto: subió mucho y rápido; son comunes las pausas. RSI bajo: puede rebotar o seguir cayendo.';
+
+const VMarket = {
+  rows: new Map(),
+  order: '',
+  lastTouch: 0,
+  sort: 'vol',
+  favOnly: false,
+  briefOk: false,
+  radarOk: false,
+  qTimer: 0,
+
+  init() {
+    const root = $('#v-mercado');
+    this.briefList = h('ul', { class: 'brief-list' });
+    this.radarBox = h('div', { class: 'radar' });
+    this.radarEls = {};
+    RADAR.forEach((g) => {
+      const chips = h('div', { class: 'chips' });
+      this.radarEls[g.id] = chips;
+      this.radarBox.append(h('div', { class: 'radar-grp' }, h('h3', { text: g.title }), chips));
+    });
+    this.radarBox.append(h('p', { class: 'hint', text: RADAR_NOTE }));
+    this.input = h('input', {
+      class: 'input', type: 'search', placeholder: 'Buscar moneda (BTC, PEPE…)', 'aria-label': 'Buscar moneda',
+      autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', enterkeyhint: 'search', oninput: () => this.onSearch(),
+    });
+    const search = h('div', { class: 'search' }, icon('search'), this.input);
+
+    this.sortBtns = {};
+    const sortRow = h('div', { class: 'chips', role: 'group', 'aria-label': 'Ordenar y filtrar' });
+    SORTS.forEach(([id, label]) => {
+      const b = h('button', { class: 'chip', type: 'button', text: label, 'aria-pressed': String(id === this.sort), onclick: () => { this.sort = id; this.syncChips(); this.render(); } });
+      this.sortBtns[id] = b;
+      sortRow.append(b);
+    });
+    this.favBtn = h('button', { class: 'chip', type: 'button', 'aria-pressed': 'false', onclick: () => { this.favOnly = !this.favOnly; this.syncChips(); this.render(); } }, icon('star'), 'Favoritas');
+    sortRow.append(this.favBtn);
+
+    this.list = h('ul', { class: 'coins' });
+    this.empty = h('p', { class: 'empty', hidden: true });
+    const touch = () => { this.lastTouch = Date.now(); };
+    this.list.addEventListener('pointerdown', touch, { passive: true });
+    this.list.addEventListener('touchmove', touch, { passive: true });
+    window.addEventListener('scroll', touch, { passive: true });
+
+    root.append(
+      h('section', { class: 'card' }, h('h2', { class: 'card-t', text: 'Resumen de hoy' }), this.briefList),
+      h('section', { class: 'card' }, h('h2', { class: 'card-t', text: 'Radar' }), this.radarBox),
+      h('div', { class: 'tools' }, search, sortRow),
+      this.list,
+      this.empty,
+      h('p', { class: 'disc', text: 'Señales informativas con datos públicos de Binance. No son asesoría financiera: invertir en criptomonedas puede hacerte perder todo el dinero.' }),
+    );
+    this.refreshBrief();
+    this.refreshRadar();
+    this.showSkeleton();
+  },
+
+  showSkeleton() {
+    this.order = '';
+    this.list.replaceChildren(...[0, 1, 2, 3, 4, 5].map(() => h('li', { class: 'skel', 'aria-hidden': 'true' })));
+  },
+  syncChips() {
+    for (const id in this.sortBtns) this.sortBtns[id].setAttribute('aria-pressed', String(id === this.sort));
+    this.favBtn.setAttribute('aria-pressed', String(this.favOnly));
+  },
+
+  onSearch() {
+    clearTimeout(this.qTimer);
+    this.qTimer = setTimeout(() => {
+      S.ui.q = this.input.value.trim();
+      S.searchSyms = S.ui.q ? this.searchResults(S.ui.q) : [];
+      onTrackedChanged();
+      this.render();
+    }, 150);
+  },
+  searchResults(q) {
+    const t = q.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (!t) return [];
+    const first = [], rest = [];
+    for (const sym of S.allUSDT) {
+      const b = baseOf(sym), nm = (NAMES[b] || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (b === t) first.unshift(sym);
+      else if (b.startsWith(t)) first.push(sym);
+      else if (b.includes(t) || (nm && nm.includes(t))) rest.push(sym);
+    }
+    return [...first, ...rest].slice(0, 15);
+  },
+
+  visibleSyms() {
+    if (S.ui.q) return S.searchSyms.filter((s) => S.M.has(s));
+    let list = [...new Set([...S.universe, ...S.watch])].filter((s) => S.M.has(s));
+    if (this.favOnly) list = list.filter((s) => S.watch.includes(s));
+    const key = this.sort;
+    const val = (s) => {
+      const m = S.M.get(s);
+      let v;
+      if (key === 'vol') v = m.qvol;
+      else if (key === 'up') v = m.ch24;
+      else if (key === 'down') v = -m.ch24;
+      else { const a = analysisOf(s); v = a ? a.fuerza : -1; }
+      return isFinite(v) ? v : -1e18;
+    };
+    return list.sort((x, y) => val(y) - val(x));
+  },
+
+  render() {
+    if (!S.ready) return;
+    const syms = this.visibleSyms();
+    const sig = syms.join();
+    const keep = new Set(syms);
+    for (const [s, r] of this.rows) if (!keep.has(s)) { r.li.remove(); this.rows.delete(s); }
+    const frag = [];
+    for (const s of syms) {
+      let r = this.rows.get(s);
+      if (!r) { r = this.makeRow(s); this.rows.set(s, r); }
+      this.updateRow(r, true);
+      frag.push(r.li);
+    }
+    const first = this.list.firstChild;
+    if (sig !== this.order || !first || first.classList.contains('skel')) {
+      this.list.replaceChildren(...frag);
+      this.order = sig;
+    }
+    let msg = '';
+    if (!syms.length) {
+      if (S.ui.q) msg = 'No encontré «' + S.ui.q + '» entre los pares USDT de Binance.';
+      else if (this.favOnly) msg = 'Aún no tienes favoritas. Toca la estrella de una moneda para guardarla aquí.';
+      else msg = 'No hay monedas para mostrar.';
+    }
+    this.empty.hidden = !msg;
+    setText(this.empty, msg);
+  },
+
+  makeRow(sym) {
+    const base = baseOf(sym);
+    const r = { sym, hasA: false, fl: 'a', tone: null, fav: null };
+    r.star = h('button', { class: 'star', type: 'button', 'aria-pressed': 'false', onclick: () => UI.toggleWatch(sym) }, icon('star'));
+    r.px = h('b', { class: 'px', text: '—' });
+    r.chg = h('small', { class: 'chg', text: '—' });
+    r.score = h('span', { class: 'score', text: '—', title: 'Fuerza de 0 a 100' });
+    r.spark = document.createElementNS(SVGNS, 'svg');
+    r.spark.setAttribute('viewBox', '0 0 56 24');
+    r.spark.setAttribute('class', 'spark');
+    r.spark.setAttribute('aria-hidden', 'true');
+    r.path = document.createElementNS(SVGNS, 'path');
+    r.spark.append(r.path);
+    r.main = h('button', { class: 'coin-main', type: 'button', onclick: () => UI.openCoin(sym) },
+      h('span', { class: 'coin-id' }, h('b', { text: base }), h('small', { text: NAMES[base] || 'Par con USDT' })),
+      r.spark,
+      h('span', { class: 'coin-px' }, r.px, r.chg),
+      r.score);
+    r.li = h('li', { class: 'coin' }, r.star, r.main);
+    return r;
+  },
+
+  updateRow(r, full) {
+    const m = S.M.get(r.sym);
+    if (!m || !(m.last > 0)) return;
+    const t = fmtPrice(m.last);
+    if (r.px.textContent !== t) {
+      r.px.textContent = t;
+      if (m.dir) { r.fl = r.fl === 'a' ? 'b' : 'a'; r.px.className = 'px fl-' + (m.dir > 0 ? 'up' : 'dn') + '-' + r.fl; }
+    }
+    setText(r.chg, fmtPct(m.ch24));
+    const tone = toneOf(m.ch24);
+    if (r.tone !== tone) { r.tone = tone; r.chg.className = 'chg ' + tone; }
+    const fav = S.watch.includes(r.sym);
+    if (r.fav !== fav) {
+      r.fav = fav;
+      r.star.setAttribute('aria-pressed', String(fav));
+      r.star.setAttribute('aria-label', (fav ? 'Quitar ' : 'Agregar ') + baseOf(r.sym) + (fav ? ' de favoritas' : ' a favoritas'));
+    }
+    if (!full && r.hasA) return;
+    const a = analysisOf(r.sym);
+    r.hasA = !!a;
+    if (a) {
+      setText(r.score, String(a.fuerza));
+      r.score.className = 'score ' + (a.tono === 'neutral' ? '' : a.tono);
+      r.score.title = 'Fuerza ' + a.fuerza + ' de 100 · ' + a.perfil;
+    }
+    const k = S.K.get(r.sym), rows = k && k.data['1h'] && k.data['1h'].rows;
+    if (rows && rows.length > 24) {
+      const cl = rows.slice(-24).map((x) => x.c);
+      cl[cl.length - 1] = m.last;
+      r.path.setAttribute('d', sparkPath(cl, 56, 24));
+      r.spark.setAttribute('class', 'spark ' + (cl[cl.length - 1] >= cl[0] ? 'up' : 'down'));
+    }
+  },
+
+  onData(syms) {
+    if (UI.tab !== 'mercado' || !this.rows.size) return;
+    for (const s of syms) {
+      const r = this.rows.get(s);
+      if (r) this.updateRow(r, false);
+    }
+  },
+
+  tick(n) {
+    if (UI.tab !== 'mercado' || document.hidden || !S.ready) return;
+    if (n % 5 === 0) this.softRender();
+    if (n % (this.briefOk ? 10 : 2) === 0) this.refreshBrief();
+    if (n % (this.radarOk ? 10 : 2) === 0) this.refreshRadar();
+  },
+  softRender() {
+    const busy = Date.now() - this.lastTouch < 4000 || this.list.contains(document.activeElement);
+    if (busy) this.rows.forEach((r) => this.updateRow(r, true));
+    else this.render();
+  },
+
+  refreshBrief() {
+    const list = [];
+    for (const sym of S.universe) {
+      const m = S.M.get(sym);
+      if (m && isFinite(m.ch24)) list.push({ ch24: m.ch24, a: analysisOf(sym) });
+    }
+    const btcA = analysisOf('BTCUSDT');
+    this.briefOk = !!btcA;
+    const items = marketBrief(list, btcA);
+    const lis = items.length
+      ? items.map((x) => h('li', null, h('span', { class: 'dot ' + (x.tone === 'neutral' ? '' : x.tone) }), h('span', { text: x.text })))
+      : [h('li', null, h('span', { class: 'dot' }), h('span', { class: 'muted', text: 'Calculando…' }))];
+    this.briefList.replaceChildren(...lis);
+  },
+  refreshRadar() {
+    const items = [];
+    for (const sym of S.universe) {
+      const a = analysisOf(sym);
+      if (a) items.push({ sym, a });
+    }
+    this.radarOk = items.length >= 3;
+    const chip = (x, label, tone) => h('button', { class: 'chip rc ' + tone, type: 'button', onclick: () => UI.openCoin(x.sym) }, h('b', { text: baseOf(x.sym) }), h('span', { text: label }));
+    const top = [...items].sort((p, q) => q.a.fuerza - p.a.fuerza).slice(0, 4)
+      .map((x) => chip(x, ' ' + x.a.fuerza, x.a.tono === 'neutral' ? '' : x.a.tono));
+    const hot = items.map((x) => ({ x, v: Math.max(x.a.rsiH, x.a.rsiD) })).filter((o) => o.v >= 70)
+      .sort((p, q) => q.v - p.v).slice(0, 4).map((o) => chip(o.x, ' RSI ' + Math.round(o.v), 'warn'));
+    const cold = items.map((x) => ({ x, v: Math.min(x.a.rsiH, x.a.rsiD) })).filter((o) => o.v <= 30)
+      .sort((p, q) => p.v - q.v).slice(0, 4).map((o) => chip(o.x, ' RSI ' + Math.round(o.v), 'warn'));
+    const fill = (id, arr) => this.radarEls[id].replaceChildren(...(arr.length ? arr : [h('span', { class: 'hint', text: this.radarOk ? 'Ninguna por ahora.' : 'Calculando…' })]));
+    fill('top', top);
+    fill('hot', hot);
+    fill('cold', cold);
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · detalle de moneda: precio, gráfico, análisis, números y formularios
+   ========================================================================== */
+
+const IV_LABEL = { '15m': '15 min', '1h': '1 h', '4h': '4 h', '1d': '1 día' };
+const IV_WINDOW = { '15m': 96, '1h': 120, '4h': 120, '1d': 90 };
+const STAT_DEFS = [
+  ['Máx. 24 h', (m) => fmtPrice(m.high)],
+  ['Mín. 24 h', (m) => fmtPrice(m.low)],
+  ['Volumen 24 h', (m) => fmtBig(m.qvol) + ' USDT'],
+  ['Volumen vs. normal', (m, a) => (a && a.relVol != null ? a.relVol.toFixed(1) + '×' : '—')],
+  ['RSI 1 h', (m, a) => (a ? a.rsiH.toFixed(0) : '—')],
+  ['RSI diario', (m, a) => (a ? a.rsiD.toFixed(0) : '—')],
+  ['Media 20 días', (m, a) => (a ? fmtPrice(a.sma20d) : '—')],
+  ['Media 50 días', (m, a) => (a && a.sma50d != null ? fmtPrice(a.sma50d) : '—')],
+  ['Volatilidad diaria', (m, a) => (a && a.vol != null ? '±' + a.vol.toFixed(1) + '%' : '—')],
+  ['Cambio 7 días', (m, a) => (a ? fmtPct(a.ch7, 1) : '—'), true],
+  ['Cambio 30 días', (m, a) => (a ? fmtPct(a.ch30, 1) : '—'), true],
+  ['Desde máx. 30 días', (m, a) => (a ? fmtPct(a.fromHigh, 1) : '—'), true],
+];
+function lstBox(cls, title, arr) {
+  return arr.length ? h('div', { class: 'lst ' + cls }, h('h4', { text: title }), h('ul', null, arr.map((t) => h('li', { text: t })))) : null;
+}
+
+const VCoin = {
+  sym: null, iv: '1h', type: 'line', hover: null, err: '', pxT: 0,
+
+  init() {
+    this.body = $('#csBody');
+    this.title = $('#csTitle');
+    this.starBtn = $('#csStar');
+    $('#csBack').addEventListener('click', () => UI.closeCoin());
+    this.starBtn.addEventListener('click', () => { if (this.sym) UI.toggleWatch(this.sym); });
+
+    this.px = h('div', { class: 'price-big', text: '—' });
+    this.p24 = h('span', { class: 'pill', text: '24 h —' });
+    this.p1h = h('span', { class: 'pill', text: '1 h —' });
+    this.stale = h('span', { class: 'stale', hidden: true });
+    const priceCard = h('section', { class: 'card' }, this.px, h('div', { class: 'price-row' }, this.p24, this.p1h, this.stale));
+
+    this.ivBtns = {};
+    const ivSeg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Intervalo de velas' });
+    Object.keys(IV_LABEL).forEach((iv) => {
+      const b = h('button', { type: 'button', text: IV_LABEL[iv], 'aria-pressed': String(iv === this.iv), onclick: () => this.setIv(iv) });
+      this.ivBtns[iv] = b;
+      ivSeg.append(b);
+    });
+    this.typeBtns = {};
+    const typeSeg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Tipo de gráfico' });
+    [['line', 'Línea'], ['candle', 'Velas']].forEach(([id, label]) => {
+      const b = h('button', { type: 'button', text: label, 'aria-pressed': String(id === this.type), onclick: () => this.setType(id) });
+      this.typeBtns[id] = b;
+      typeSeg.append(b);
+    });
+    this.cv = h('canvas', { class: 'chart', role: 'img', 'aria-label': 'Gráfico de precio' });
+    const at = (e) => { this.hover = chartIndexAt(this.cv, e.clientX); this.draw(); };
+    this.cv.addEventListener('pointerdown', at);
+    this.cv.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons) at(e); });
+    this.cv.addEventListener('pointerleave', () => { this.hover = null; this.draw(); });
+    this.cv.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') setTimeout(() => { this.hover = null; this.draw(); }, 1800); });
+    this.chartMsg = h('p', { class: 'hint', hidden: true });
+    const chartCard = h('section', { class: 'card' },
+      h('div', { class: 'chart-top' }, ivSeg, typeSeg), this.cv, this.chartMsg,
+      h('div', { class: 'legend' }, h('span', null, h('i'), 'Media de 20 velas'), h('span', { text: 'Toca el gráfico para ver cada vela' })));
+
+    this.analysis = h('section', { class: 'card' });
+    this.statEls = STAT_DEFS.map(([label, fn, pct]) => {
+      const dd = h('dd', { text: '—' });
+      return { fn, pct, dd, row: h('div', null, h('dt', { text: label }), dd) };
+    });
+    const statsCard = h('section', { class: 'card' }, h('h2', { class: 'card-t', text: 'Números clave' }), h('dl', { class: 'stats' }, this.statEls.map((s) => s.row)));
+    this.alertBox = h('details', { class: 'card' }, h('summary', { text: 'Crear alerta' }), this.alertHost = h('div'));
+    this.posBox = h('details', { class: 'card' }, h('summary', { text: 'Agregar a mi cartera' }), this.posHost = h('div'));
+    this.body.append(priceCard, chartCard, this.analysis, statsCard, this.alertBox, this.posBox,
+      h('p', { class: 'disc', text: 'Datos públicos de Binance. Señales informativas, no asesoría financiera.' }));
+    window.addEventListener('resize', () => this.draw());
+  },
+
+  open(sym) {
+    this.sym = sym;
+    this.hover = null;
+    this.err = '';
+    S.selected = sym;
+    const base = baseOf(sym);
+    this.title.replaceChildren(base, h('small', { text: NAMES[base] || '' }));
+    this.cv.setAttribute('aria-label', 'Gráfico de precio de ' + base);
+    this.alertHost.replaceChildren(VAlerts.form(sym));
+    this.posHost.replaceChildren(VWallet.addForm(sym));
+    this.alertBox.open = false;
+    this.posBox.open = false;
+    this.body.scrollTop = 0;
+    this.syncStar();
+    this.loadIv();
+    onTrackedChanged();
+    this.renderLive();
+    this.renderAnalysis();
+    this.draw();
+  },
+  onClose() {
+    this.sym = null;
+    this.hover = null;
+    S.selected = null;
+    onTrackedChanged();
+  },
+
+  loadIv() {
+    const sym = this.sym;
+    this.err = '';
+    ['1h', '1d', this.iv].forEach((iv) => {
+      ensureKlines(sym, iv, { prio: 1 }).catch((e) => { if (this.sym === sym && iv === this.iv) { this.err = e.message || 'No se pudo cargar el gráfico.'; this.draw(); } });
+    });
+  },
+  setIv(iv) {
+    this.iv = iv;
+    for (const k in this.ivBtns) this.ivBtns[k].setAttribute('aria-pressed', String(k === iv));
+    this.hover = null;
+    this.loadIv();
+    this.draw();
+  },
+  setType(t) {
+    this.type = t;
+    for (const k in this.typeBtns) this.typeBtns[k].setAttribute('aria-pressed', String(k === t));
+    this.draw();
+  },
+  syncStar() {
+    if (!this.sym) return;
+    const fav = S.watch.includes(this.sym);
+    this.starBtn.setAttribute('aria-pressed', String(fav));
+    this.starBtn.setAttribute('aria-label', fav ? 'Quitar de favoritas' : 'Agregar a favoritas');
+  },
+
+  levels() {
+    const out = [];
+    S.alerts.forEach((a) => {
+      if (a.sym === this.sym && a.type === 'price' && a.state !== 'fired') out.push({ price: a.target, label: 'Alerta ' + fmtPrice(a.target), kind: 'alert' });
+    });
+    S.positions.forEach((p) => {
+      if (p.sym === this.sym) out.push({ price: p.entry, label: 'Compra ' + fmtPrice(p.entry), kind: 'entry' });
+    });
+    return out;
+  },
+  draw() {
+    if (!this.sym || $('#sheet').hidden) return;
+    const rows = liveSeries(this.sym, this.iv);
+    const w = IV_WINDOW[this.iv] || 100;
+    drawChart(this.cv, rows, { type: this.type, iv: this.iv, window: this.type === 'candle' ? Math.min(w, 60) : w, hover: this.hover, levels: this.levels() });
+    const msg = !rows && this.err ? this.err : '';
+    this.chartMsg.hidden = !msg;
+    setText(this.chartMsg, msg);
+  },
+
+  renderLive() {
+    const sym = this.sym, m = S.M.get(sym);
+    if (!m || !(m.last > 0)) return;
+    const t = fmtPrice(m.last);
+    if (this.px.textContent !== t) {
+      this.px.textContent = t;
+      this.px.className = 'price-big ' + (m.dir > 0 ? 't-up' : m.dir < 0 ? 't-down' : '');
+      clearTimeout(this.pxT);
+      this.pxT = setTimeout(() => { this.px.className = 'price-big'; }, 700);
+    }
+    const pill = (el, label, v) => {
+      setText(el, label + ' ' + fmtPct(v));
+      el.className = 'pill ' + toneOf(v);
+    };
+    pill(this.p24, '24 h', m.ch24);
+    pill(this.p1h, '1 h', S.W1.has(sym) ? S.W1.get(sym) : null);
+    this.updStale();
+    const a = analysisOf(sym);
+    if (a && !this.hasA) this.renderAnalysis();
+    this.statEls.forEach((s) => {
+      const txt = s.fn(m, a);
+      setText(s.dd, txt);
+      if (s.pct) s.dd.className = txt[0] === '+' ? 't-up' : txt[0] === MINUS ? 't-down' : '';
+    });
+    this.draw();
+  },
+  updStale() {
+    const m = S.M.get(this.sym);
+    const old = !S.demo && m && S.ready && Date.now() - m.t > 20000;
+    this.stale.hidden = !old;
+    if (old) setText(this.stale, 'Sin datos nuevos hace ' + ago(Date.now() - m.t));
+  },
+  renderAnalysis() {
+    const a = analysisOf(this.sym), box = this.analysis;
+    this.hasA = !!a;
+    box.replaceChildren(h('h2', { class: 'card-t', text: 'Análisis automático' }));
+    if (!a) {
+      box.append(h('p', { class: 'hint', text: this.err ? 'No se pudo calcular: ' + this.err : 'Calculando… necesita el historial de velas de Binance.' }));
+      return;
+    }
+    const tone = a.tono === 'neutral' ? '' : a.tono;
+    box.append(...[
+      h('div', { class: 'gauge' },
+        h('div', { class: 'gauge-bar ' + tone, role: 'img', 'aria-label': 'Fuerza ' + a.fuerza + ' de 100' }, h('i', { style: 'width:' + a.fuerza + '%' })),
+        h('div', null, h('b', { text: a.fuerza }), h('small', { text: ' /100 Fuerza' }))),
+      h('p', { class: 'perfil', text: a.perfil }),
+      h('div', { class: 'chips', style: 'margin-top:8px' }, a.tags.map((t) => h('span', { class: 'pill ' + (t.tone === 'neutral' ? '' : t.tone), text: t.t }))),
+      h('p', { class: 'sumline', text: a.summary }),
+      lstBox('pro', 'A favor', a.pros),
+      lstBox('con', 'En contra', a.cons),
+      lstBox('note', 'A tener en cuenta', a.notes),
+      h('p', { class: 'hint', style: 'margin-top:12px', text: 'Fuerza resume tendencia, impulso y RSI de lo que ya pasó. No predice el precio ni es una recomendación de compra o venta.' }),
+    ].filter(Boolean));
+  },
+
+  onData(syms) {
+    if (!this.sym || $('#sheet').hidden) return;
+    if (syms.includes(this.sym) || syms.includes('*w1')) this.renderLive();
+  },
+  tick(n) {
+    if (!this.sym || $('#sheet').hidden) return;
+    this.updStale();
+    if (n % 3 === 0) this.renderAnalysis();
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · alertas: formulario, lista, historial y permisos de aviso
+   ========================================================================== */
+
+const ALERT_TYPES = [['price', 'Precio'], ['move1h', 'Movimiento en 1 hora'], ['rsi', 'RSI de 1 hora']];
+
+function alertCtxNow(sym) {
+  const m = S.M.get(sym);
+  return { price: m ? m.last : null, ch1h: S.W1.has(sym) ? S.W1.get(sym) : null, rsiH: rsiNow(sym) };
+}
+function alertNow(a) {
+  const m = S.M.get(a.sym);
+  if (a.type === 'price') return m && m.last > 0 ? 'Ahora ' + fmtPrice(m.last) + ' · el objetivo está a ' + fmtPct((a.target / m.last - 1) * 100, 1) : 'Esperando precio…';
+  if (a.type === 'move1h') return S.W1.has(a.sym) ? 'Última hora: ' + fmtPct(S.W1.get(a.sym), 1) : 'Calculando…';
+  const v = rsiNow(a.sym);
+  return v == null ? 'Calculando RSI…' : 'RSI (1 h) ahora: ' + v.toFixed(0);
+}
+
+const VAlerts = {
+  nowEls: new Map(),
+
+  init() {
+    const root = $('#v-alertas');
+    this.perm = h('section', { class: 'card perm' });
+    this.listBox = h('section', { class: 'card' });
+    this.logBox = h('section', { class: 'card' });
+    root.append(this.perm, h('section', { class: 'card' }, h('h2', { class: 'card-t', text: 'Nueva alerta' }), this.form()), this.listBox, this.logBox);
+    this.render();
+  },
+
+  form(fixed) {
+    const ids = { c: uid('fc'), t: uid('ft'), p: uid('fp'), m: uid('fm'), d: uid('fd'), r: uid('fr'), l: uid('fl') };
+    const field = (label, ctl, id) => h('div', { class: 'field' }, h('label', { for: id, text: label }), ctl);
+    const opts = (list) => list.map(([v, l]) => h('option', { value: v, text: l }));
+    const coin = h('input', { class: 'input', id: ids.c, list: 'coinlist', placeholder: 'Ej. BTC', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', value: fixed ? baseOf(fixed) : '', readonly: !!fixed });
+    const type = h('select', { class: 'select', id: ids.t }, opts(ALERT_TYPES));
+    const target = h('input', { class: 'input', id: ids.p, inputmode: 'decimal', placeholder: 'Ej. 70000', autocomplete: 'off' });
+    const pct = h('input', { class: 'input', id: ids.m, inputmode: 'decimal', value: '3', autocomplete: 'off' });
+    const mdir = h('select', { class: 'select', id: ids.d }, opts([['any', 'Sube o baja'], ['up', 'Sube'], ['down', 'Baja']]));
+    const rdir = h('select', { class: 'select', id: ids.r }, opts([['below', 'Baja de'], ['above', 'Sube de']]));
+    const level = h('input', { class: 'input', id: ids.l, inputmode: 'numeric', value: '30', autocomplete: 'off' });
+    const pPrice = field('Precio objetivo (USDT)', target, ids.p);
+    const pMove = h('div', { class: 'two' }, field('Cambio mínimo (%)', pct, ids.m), field('Dirección', mdir, ids.d));
+    const pRsi = h('div', { class: 'two' }, field('Condición', rdir, ids.r), field('Nivel (1 a 99)', level, ids.l));
+    const prev = h('p', { class: 'form-prev' });
+    const err = h('p', { class: 'form-err', role: 'alert' });
+    const f = h('form', { class: 'form', novalidate: true }, field('Moneda', coin, ids.c), field('Tipo', type, ids.t), pPrice, pMove, pRsi, prev, err,
+      h('button', { class: 'btn primary', type: 'submit', text: 'Crear alerta' }));
+
+    const preview = () => {
+      err.textContent = '';
+      pPrice.hidden = type.value !== 'price';
+      pMove.hidden = type.value !== 'move1h';
+      pRsi.hidden = type.value !== 'rsi';
+      const sym = normSym(coin.value), m = S.M.get(sym), b = sym ? baseOf(sym) : 'la moneda';
+      let t = '';
+      if (!m) t = coin.value.trim() ? 'Escribe una moneda que exista en Binance con USDT (por ejemplo BTC).' : '';
+      else if (type.value === 'price') {
+        const v = parseNum(target.value);
+        t = 'Precio actual: ' + fmtPrice(m.last) + ' USDT.' +
+          (v > 0 && v !== m.last ? ' Te aviso cuando ' + b + (v > m.last ? ' suba' : ' baje') + ' a ' + fmtPrice(v) + ' (' + fmtPct((v / m.last - 1) * 100, 1) + ' desde ahora).' : '');
+      } else if (type.value === 'move1h') {
+        const v = parseNum(pct.value);
+        t = v > 0 ? 'Te aviso si ' + b + ' ' + (mdir.value === 'up' ? 'sube' : mdir.value === 'down' ? 'baja' : 'se mueve') + ' ' + v + '% o más en 1 hora.' : '';
+      } else {
+        const v = parseNum(level.value), r = rsiNow(sym);
+        t = v > 0 ? 'Te aviso cuando el RSI de 1 hora de ' + b + (rdir.value === 'below' ? ' baje de ' : ' suba de ') + v + '.' + (r != null ? ' Ahora está en ' + r.toFixed(0) + '.' : '') : '';
+      }
+      prev.textContent = t;
+    };
+    rdir.addEventListener('change', () => { level.value = rdir.value === 'below' ? '30' : '70'; });
+    f.addEventListener('input', preview);
+    f.addEventListener('change', preview);
+    f.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const sym = normSym(coin.value);
+      if (!sym || !S.M.has(sym)) { err.textContent = 'No encuentro esa moneda en Binance (par con USDT). Prueba con BTC, ETH o SOL.'; return; }
+      if (S.alerts.filter((a) => a.state !== 'fired').length >= 50) { err.textContent = 'Tienes 50 alertas activas. Borra alguna para crear otra.'; return; }
+      const ty = type.value;
+      const spec = ty === 'price' ? { sym, type: ty, target: parseNum(target.value) }
+        : ty === 'move1h' ? { sym, type: ty, pct: parseNum(pct.value), dir: mdir.value }
+          : { sym, type: ty, level: parseNum(level.value), dir: rdir.value };
+      const r = makeAlert(spec, alertCtxNow(sym));
+      if (r.error) { err.textContent = r.error; return; }
+      S.alerts.push(r.alert);
+      saveStore();
+      onTrackedChanged();
+      target.value = '';
+      preview();
+      VAlerts.render();
+      VCoin.draw();
+      UI.flash('Alerta creada: ' + baseOf(sym) + ' · ' + describeAlert(r.alert));
+    });
+    preview();
+    return f;
+  },
+
+  render() {
+    this.renderPerm();
+    this.renderList();
+    this.renderLog();
+  },
+
+  renderPerm() {
+    const box = this.perm;
+    const p = notifSupported() ? Notification.permission : 'unsupported';
+    const acts = h('div', { class: 'acts' });
+    let msg;
+    if (p === 'unsupported') msg = 'Este navegador no permite notificaciones del sistema. Verás el aviso dentro de la app, con sonido y vibración.';
+    else if (p === 'default') {
+      msg = 'Activa los avisos del sistema para ver las alertas aunque estés en otra pestaña o app.';
+      acts.append(h('button', { class: 'btn primary', type: 'button', text: 'Activar avisos del sistema', onclick: async () => { await askNotifPermission(); this.renderPerm(); } }));
+    } else if (p === 'granted') {
+      msg = 'Avisos del sistema activados.';
+      acts.append(h('button', { class: 'btn', type: 'button', text: 'Probar aviso', onclick: () => notify('Pulso · prueba', 'Así se ve un aviso de alerta.', null, true) }));
+    } else msg = 'Los avisos están bloqueados en este navegador. Actívalos en los ajustes del sitio (candado junto a la dirección).';
+    box.replaceChildren(...[
+      h('h2', { class: 'card-t', text: 'Avisos' }),
+      h('p', { text: msg }),
+      acts.children.length ? acts : null,
+      h('p', { class: 'hint', text: 'Las alertas se revisan solo mientras Pulso está abierto. Si cierras la pestaña o el navegador, no avisan. Para avisos con la app cerrada, usa las alertas de la app de Binance.' }),
+    ].filter(Boolean));
+  },
+
+  subText(a) {
+    return (a.state === 'waiting' ? 'En espera: ya se cumple ahora; avisa si deja de cumplirse y vuelve a ocurrir. ' : '') + alertNow(a);
+  },
+  item(a) {
+    const li = h('li', { class: 'alert-item' + (a.state === 'fired' ? ' fired' : '') });
+    const title = h('div', { class: 'al-title' }, h('button', { type: 'button', text: baseOf(a.sym), onclick: () => UI.openCoin(a.sym) }), ' · ' + describeAlert(a));
+    const sub = h('div', { class: 'al-sub' });
+    if (a.state === 'fired') sub.textContent = 'Avisó hace ' + ago(Date.now() - a.firedAt) + (a.firedPrice > 0 ? ' · precio ' + fmtPrice(a.firedPrice) : '');
+    else { sub.textContent = this.subText(a); this.nowEls.set(a.id, { a, el: sub }); }
+    const act = h('div', { class: 'al-act' });
+    if (a.state === 'fired') act.append(h('button', { class: 'btn sm', type: 'button', text: 'Reactivar', onclick: () => this.rearm(a) }));
+    act.append(h('button', { class: 'icon-btn danger', type: 'button', 'aria-label': 'Borrar alerta de ' + baseOf(a.sym), onclick: () => this.remove(a) }, icon('trash')));
+    li.append(title, sub, act);
+    return li;
+  },
+  renderList() {
+    const box = this.listBox;
+    this.nowEls.clear();
+    box.replaceChildren(h('h2', { class: 'card-t', text: 'Mis alertas' }));
+    if (!S.alerts.length) {
+      box.append(h('p', { class: 'empty', text: 'Aún no tienes alertas. Crea una arriba: avisa una sola vez cuando se cumpla la condición.' }));
+      return;
+    }
+    const act = S.alerts.filter((a) => a.state !== 'fired'), done = S.alerts.filter((a) => a.state === 'fired');
+    if (act.length) box.append(h('ul', { class: 'alert-list' }, act.map((a) => this.item(a))));
+    if (done.length) box.append(h('h2', { class: 'card-t', style: 'margin:16px 0 8px', text: 'Ya avisaron' }), h('ul', { class: 'alert-list' }, done.map((a) => this.item(a))));
+  },
+  renderLog() {
+    const box = this.logBox;
+    box.replaceChildren(h('h2', { class: 'card-t', text: 'Últimos avisos' }));
+    if (!S.log.length) {
+      box.append(h('p', { class: 'hint', text: 'Cuando una alerta salte, queda registrada aquí.' }));
+      return;
+    }
+    box.append(
+      h('ul', { class: 'log-list' }, S.log.slice(0, 10).map((l) => h('li', null, h('time', { text: 'hace ' + ago(Date.now() - l.t) }), h('span', { text: l.text })))),
+      h('button', { class: 'btn sm', type: 'button', style: 'margin-top:10px', text: 'Borrar historial', onclick: () => { S.log = []; saveStore(); this.renderLog(); } }));
+  },
+
+  rearm(a) {
+    a.state = alertCond({ ...a, state: 'armed' }, alertCtxNow(a.sym)) === false ? 'armed' : 'waiting';
+    delete a.firedAt;
+    delete a.firedPrice;
+    saveStore();
+    onTrackedChanged();
+    this.render();
+    VCoin.draw();
+  },
+  remove(a) {
+    S.alerts = S.alerts.filter((x) => x.id !== a.id);
+    saveStore();
+    onTrackedChanged();
+    this.render();
+    VCoin.draw();
+  },
+
+  onData(syms) {
+    if (!this.nowEls.size) return;
+    for (const { a, el } of this.nowEls.values()) {
+      if (syms.includes(a.sym) || syms.includes('*w1')) setText(el, this.subText(a));
+    }
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · cartera manual y calculadora de riesgo
+   Nada se conecta a tu cuenta de Binance: tú anotas lo que compraste.
+   ========================================================================== */
+
+const signedUSDT = (v) => (v > 0 ? '+' : v < 0 ? MINUS : '') + fmtUSDT(Math.abs(v));
+const warnLine = (t) => h('span', { class: 'warnline', text: t });
+
+const VWallet = {
+  plEls: [],
+
+  init() {
+    const root = $('#v-cartera');
+    this.sumVal = h('b', { text: '—' });
+    this.sumCost = h('b', { text: '—' });
+    this.sumPl = h('b', { text: '—' });
+    this.sum = h('section', { class: 'card' },
+      h('h2', { class: 'card-t', text: 'Mi cartera (manual)' }),
+      h('div', { class: 'sum-grid' },
+        h('div', null, h('small', { text: 'Valor actual' }), this.sumVal),
+        h('div', null, h('small', { text: 'Lo que pagaste' }), this.sumCost),
+        h('div', { class: 'wide' }, h('small', { text: 'Ganancia o pérdida' }), this.sumPl)),
+      h('p', { class: 'hint', style: 'margin-top:10px', text: 'Tú anotas lo que compraste; Pulso calcula con el precio en vivo. No se conecta a tu cuenta de Binance.' }));
+    this.listBox = h('section', { class: 'card' });
+    this.addHost = h('div');
+    this.addBox = h('details', { class: 'card' }, h('summary', { text: 'Agregar posición' }), this.addHost);
+    this.addHost.append(this.addForm());
+    this.calcBox = h('details', { class: 'card', open: true }, h('summary', { text: 'Calculadora de riesgo' }), this.calc());
+    root.append(this.sum, this.listBox, this.addBox, this.calcBox,
+      h('p', { class: 'disc', text: 'Cálculos informativos. No incluyen comisiones ni impuestos. No son asesoría financiera.' }));
+    this.render();
+  },
+
+  render() {
+    this.renderList();
+    this.renderSum();
+    this.addBox.open = !S.positions.length;
+  },
+
+  renderSum() {
+    let cost = 0, value = 0;
+    for (const p of S.positions) {
+      const m = S.M.get(p.sym);
+      if (m && m.last > 0) { const r = plOf(p, m.last); cost += r.cost; value += r.value; }
+    }
+    if (!S.positions.length) { setText(this.sumVal, '—'); setText(this.sumCost, '—'); setText(this.sumPl, '—'); this.sumPl.className = ''; return; }
+    const pl = value - cost, pct = cost > 0 ? (value / cost - 1) * 100 : null;
+    setText(this.sumVal, fmtUSDT(value) + ' USDT');
+    setText(this.sumCost, fmtUSDT(cost) + ' USDT');
+    setText(this.sumPl, signedUSDT(pl) + ' USDT (' + fmtPct(pct, 1) + ')');
+    this.sumPl.className = pl > 0 ? 't-up' : pl < 0 ? 't-down' : '';
+  },
+
+  renderList() {
+    const box = this.listBox;
+    this.plEls = [];
+    box.replaceChildren(h('h2', { class: 'card-t', text: 'Mis posiciones' }));
+    if (!S.positions.length) {
+      box.append(h('p', { class: 'empty', text: 'Aún no tienes posiciones. Agrega una abajo para ver cuánto ganarías o perderías con el precio en vivo.' }));
+      return;
+    }
+    box.append(h('ul', { class: 'pos-list' }, S.positions.map((p) => this.item(p))));
+  },
+  item(p) {
+    const e = { p, now: h('span'), pl: h('span', { class: 'pos-pl' }) };
+    this.plEls.push(e);
+    this.upd(e);
+    return h('li', { class: 'pos-item' },
+      h('div', { class: 'al-title' }, h('button', { type: 'button', text: baseOf(p.sym), onclick: () => UI.openCoin(p.sym) }), ' · ' + fmtQty(p.qty) + ' a ' + fmtPrice(p.entry)),
+      h('div', { class: 'al-sub' }, e.now, ' · ', e.pl),
+      h('div', { class: 'al-act' }, h('button', { class: 'icon-btn danger', type: 'button', 'aria-label': 'Borrar posición de ' + baseOf(p.sym), onclick: () => this.remove(p) }, icon('trash'))));
+  },
+  upd(e) {
+    const m = S.M.get(e.p.sym);
+    if (!m || !(m.last > 0)) { setText(e.now, 'Sin precio'); setText(e.pl, ''); return; }
+    const r = plOf(e.p, m.last);
+    setText(e.now, 'Ahora ' + fmtPrice(m.last) + ' · valor ' + fmtUSDT(r.value));
+    setText(e.pl, signedUSDT(r.pl) + ' USDT (' + fmtPct(r.pct, 1) + ')');
+    e.pl.className = 'pos-pl ' + (r.pl > 0 ? 't-up' : r.pl < 0 ? 't-down' : '');
+  },
+  remove(p) {
+    S.positions = S.positions.filter((x) => x.id !== p.id);
+    saveStore();
+    onTrackedChanged();
+    this.render();
+    VCoin.draw();
+  },
+  onData(syms) {
+    let any = false;
+    for (const e of this.plEls) {
+      if (syms.includes(e.p.sym)) { this.upd(e); any = true; }
+    }
+    if (any) this.renderSum();
+  },
+
+  addForm(fixed) {
+    const ids = { c: uid('wc'), q: uid('wq'), e: uid('we') };
+    const field = (label, ctl, id) => h('div', { class: 'field' }, h('label', { for: id, text: label }), ctl);
+    const coin = h('input', { class: 'input', id: ids.c, list: 'coinlist', placeholder: 'Ej. BTC', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', value: fixed ? baseOf(fixed) : '', readonly: !!fixed });
+    const qty = h('input', { class: 'input', id: ids.q, inputmode: 'decimal', placeholder: 'Ej. 0.5', autocomplete: 'off' });
+    const entry = h('input', { class: 'input', id: ids.e, inputmode: 'decimal', placeholder: 'Precio de compra', autocomplete: 'off' });
+    const err = h('p', { class: 'form-err', role: 'alert' });
+    const f = h('form', { class: 'form', novalidate: true }, field('Moneda', coin, ids.c),
+      h('div', { class: 'two' }, field('Cantidad', qty, ids.q), field('Precio de compra (USDT)', entry, ids.e)),
+      h('p', { class: 'hint', text: 'Si dejas el precio vacío, uso el precio actual.' }), err,
+      h('button', { class: 'btn primary', type: 'submit', text: 'Agregar a mi cartera' }));
+    const hintPrice = () => {
+      const m = S.M.get(normSym(coin.value));
+      entry.placeholder = m ? 'Actual: ' + fmtPrice(m.last) : 'Precio de compra';
+    };
+    f.addEventListener('input', () => { err.textContent = ''; hintPrice(); });
+    f.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const sym = normSym(coin.value), m = S.M.get(sym);
+      if (!sym || !m) { err.textContent = 'No encuentro esa moneda en Binance (par con USDT). Prueba con BTC, ETH o SOL.'; return; }
+      const q = parseNum(qty.value);
+      if (!(q > 0)) { err.textContent = 'Escribe una cantidad mayor que 0.'; return; }
+      const e = entry.value.trim() ? parseNum(entry.value) : m.last;
+      if (!(e > 0)) { err.textContent = 'Escribe un precio de compra válido o déjalo vacío.'; return; }
+      if (S.positions.length >= 100) { err.textContent = 'Máximo 100 posiciones.'; return; }
+      S.positions.push({ id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), sym, qty: q, entry: e, t: Date.now() });
+      saveStore();
+      onTrackedChanged();
+      qty.value = '';
+      entry.value = '';
+      this.render();
+      VCoin.draw();
+      UI.flash('Posición agregada: ' + fmtQty(q) + ' ' + baseOf(sym));
+    });
+    hintPrice();
+    return f;
+  },
+
+  calc() {
+    const ids = { c: uid('kc'), r: uid('kr'), s: uid('ks'), e: uid('ke'), x: uid('kx'), t: uid('kt') };
+    const field = (label, ctl, id) => h('div', { class: 'field' }, h('label', { for: id, text: label }), ctl);
+    const num = (id, ph, val) => h('input', { class: 'input', id, inputmode: 'decimal', placeholder: ph, autocomplete: 'off', value: val || '' });
+    const capital = num(ids.c, 'Ej. 200');
+    const risk = num(ids.r, 'Ej. 1', '1');
+    const coin = h('input', { class: 'input', id: ids.s, list: 'coinlist', placeholder: 'Opcional', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false' });
+    const entry = num(ids.e, 'Precio de entrada');
+    const stop = num(ids.x, 'Precio del stop-loss');
+    const target = num(ids.t, 'Opcional');
+    const res = h('div', { class: 'res', 'aria-live': 'polite' });
+    const f = h('form', { class: 'form', novalidate: true },
+      h('div', { class: 'two' }, field('Tu capital (USDT)', capital, ids.c), field('Riesgo (%)', risk, ids.r)),
+      h('p', { class: 'hint', text: 'Riesgo = lo que aceptas perder si la operación sale mal. Una regla común es 1 % o 2 % del capital.' }),
+      h('div', { class: 'two' }, field('Moneda', coin, ids.s), field('Entrada (USDT)', entry, ids.e)),
+      h('div', { class: 'two' }, field('Stop-loss (USDT)', stop, ids.x), field('Objetivo (USDT)', target, ids.t)),
+      res);
+    f.addEventListener('submit', (e) => e.preventDefault());
+    const upd = () => {
+      const sym = normSym(coin.value), m = S.M.get(sym), base = m ? baseOf(sym) : 'unidades';
+      const cap = parseNum(capital.value), rp = parseNum(risk.value), en = parseNum(entry.value), st = parseNum(stop.value), tg = parseNum(target.value);
+      const r = positionSize({ capital: cap, riskPct: rp, entry: en, stop: st });
+      res.replaceChildren();
+      if (!r) { res.append(h('span', { class: 'muted', text: 'Completa capital, riesgo, entrada y stop-loss para ver el resultado.' })); return; }
+      if (r.error) { res.append(warnLine(r.error)); return; }
+      res.append(
+        h('span', null, 'Compras ', h('b', { text: fmtQty(r.qty) + ' ' + base }), ' = ', h('b', { text: fmtUSDT(r.value) + ' USDT' }), ' (' + r.pctOfCapital.toFixed(0) + '% de tu capital).'),
+        h('span', null, 'Si llega al stop (' + fmtPct(-r.stopPct, 1) + '), pierdes ', h('b', { text: fmtUSDT(r.risk) + ' USDT' }), ' (' + ((r.risk / cap) * 100).toFixed(2) + '% del capital).'));
+      if (tg > en) {
+        res.append(h('span', null, 'Si llega al objetivo (' + fmtPct((tg / en - 1) * 100, 1) + '), ganas ', h('b', { text: fmtUSDT(r.qty * (tg - en)) + ' USDT' }),
+          '. Relación beneficio/riesgo: ', h('b', { text: ((tg - en) / (en - st)).toFixed(1) + ' a 1' }), '.'));
+      } else if (target.value.trim()) res.append(warnLine('El objetivo debe estar por encima de la entrada.'));
+      if (r.capped) res.append(warnLine('Tu capital no alcanza para ese riesgo: la posición usa todo el capital.'));
+      if (r.stopPct < 0.5) res.append(warnLine('Un stop tan cerca puede saltar por el movimiento normal del precio.'));
+      if (r.pctOfCapital > 50) res.append(warnLine('Más de la mitad de tu capital quedaría en una sola moneda.'));
+      res.append(h('span', { class: 'hint', text: 'No incluye comisiones. En caídas bruscas el stop puede ejecutarse a un precio peor.' }));
+    };
+    f.addEventListener('input', (e) => {
+      if (e.target === coin) {
+        const m = S.M.get(normSym(coin.value));
+        if (m && (!entry.value || entry.dataset.auto)) { entry.value = fmtPrice(m.last).replace(/,/g, ''); entry.dataset.auto = '1'; }
+      } else if (e.target === entry) delete entry.dataset.auto;
+      upd();
+    });
+    upd();
+    return f;
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · Aprender y Ajustes
+   ========================================================================== */
+
+const LEARN = [
+  { t: 'Cómo leer Pulso en 30 segundos', b: [
+    ['p', 'En Mercado ves el precio en vivo, el cambio de 24 horas y la Fuerza de cada moneda.'],
+    ['ul', ['Fuerza (0 a 100): qué tan a favor está la tendencia reciente. Sirve para comparar monedas entre sí.', 'Radar: las monedas con más Fuerza y las que tienen el RSI muy alto o muy bajo.', 'Toca una moneda para ver su gráfico, su análisis y crear alertas.']],
+    ['p', 'Pulso describe lo que ya pasó. No predice el precio.'],
+  ] },
+  { t: 'Fuerza: cómo se calcula', b: [
+    ['p', 'Es un número de 0 a 100 con tres partes:'],
+    ['ul', ['50 % tendencia: cuántas de 5 señales están a favor (precio sobre su media de 20 y de 50 días, media de 20 sobre media de 50 días, precio sobre su media de 20 horas y media de 20 sobre la de 50 horas).', '30 % impulso: cambio de los últimos 7 días (70 %) y de las últimas 24 horas (30 %).', '20 % zona del RSI: puntúa más alto entre 50 y 65, y menos cerca de 30 o por encima de 75.']],
+    ['p', 'Una Fuerza alta dice que la moneda viene subiendo. No dice que vaya a seguir subiendo.'],
+  ] },
+  { t: 'RSI', b: [
+    ['p', 'El RSI compara las subidas y bajadas de las últimas 14 velas y da un número de 0 a 100.'],
+    ['ul', ['70 o más: sobrecompra. Subió mucho y rápido; son comunes las pausas o correcciones.', '30 o menos: sobreventa. Cayó mucho; puede rebotar o seguir cayendo.', 'En tendencias fuertes el RSI puede quedarse alto durante semanas. Por sí solo no es una señal de venta.']],
+    ['p', 'Pulso muestra el RSI de 1 hora (corto plazo) y el diario (más lento).'],
+  ] },
+  { t: 'Medias móviles', b: [
+    ['p', 'Una media móvil es el promedio de los últimos cierres. La de 20 días promedia 20 velas diarias.'],
+    ['ul', ['Precio por encima de su media: la tendencia en ese plazo es alcista.', 'Media de 20 por encima de la de 50: la tendencia reciente es más fuerte que la anterior.']],
+    ['p', 'Las medias llegan tarde: confirman lo que ya ocurrió.'],
+  ] },
+  { t: 'Volatilidad y riesgo', b: [
+    ['p', 'Pulso mide cuánto cambia el precio en un día normal (desviación estándar de los últimos 14 días).'],
+    ['ul', ['Bajo: menos de ±2.5 %', 'Medio: de ±2.5 a ±5 %', 'Alto: de ±5 a ±8 %', 'Muy alto: más de ±8 %']],
+    ['p', 'Ejemplo: con ±5 % diario, un movimiento de cerca de ±27 % en un mes no sería raro (5 % × √30). Más volatilidad significa más ganancia posible y más pérdida posible.'],
+  ] },
+  { t: 'Volumen', b: [
+    ['p', 'Volumen vs. normal compara el dinero negociado en 24 horas con el promedio de los 20 días anteriores.'],
+    ['ul', ['1.5× o más: hay más actividad de lo normal.', 'Menos de 0.6×: poco interés ese día.']],
+    ['p', 'Un movimiento con mucho volumen tiene más participantes detrás que uno con poco.'],
+  ] },
+  { t: 'Cuánto comprar: tamaño de posición y stop-loss', b: [
+    ['p', 'Primero decides cuánto aceptas perder; después calculas cuánto comprar.'],
+    ['code', 'Cantidad = (capital × riesgo %) ÷ (entrada − stop)'],
+    ['p', 'Ejemplo: capital 200 USDT, riesgo 1 % (2 USDT), entrada 100 y stop 95. Cantidad = 2 ÷ 5 = 0.4 unidades = 40 USDT (20 % del capital). Si el precio toca el stop, pierdes 2 USDT.'],
+    ['p', 'La calculadora de la pestaña Cartera hace esta cuenta por ti.'],
+  ] },
+  { t: 'Reglas básicas de riesgo', b: [
+    ['ul', ['Invierte solo dinero que puedas perder sin que afecte tus gastos.', 'No pongas todo en una sola moneda.', 'Evita el apalancamiento y los futuros al empezar: una caída pequeña puede liquidar toda la posición.', 'Desconfía de las promesas de ganancias seguras y de los grupos que venden «señales».', 'Antes de comprar, anota por qué compras y en qué precio saldrías.', 'Las criptomonedas pueden perder casi todo su valor.']],
+  ] },
+  { t: 'Cómo funcionan las alertas', b: [
+    ['ul', ['Cada alerta avisa una sola vez.', 'Precio: avisa cuando el precio sube o baja hasta tu objetivo.', 'Movimiento en 1 hora: avisa si el precio cambia ese porcentaje en la última hora.', 'RSI: avisa cuando el RSI de 1 hora cruza el nivel que elegiste (por ejemplo, baja de 30).', 'Si la condición ya se cumple al crear la alerta, queda «en espera» y avisa cuando deje de cumplirse y vuelva a ocurrir.', 'Funcionan solo con Pulso abierto. Con la página cerrada no hay avisos.']],
+  ] },
+  { t: 'Antes de operar en Binance', b: [
+    ['ul', ['Binance exige ser mayor de edad (18 años en la mayoría de países) y verificar tu identidad.', 'Pulso no opera por ti: solo muestra datos públicos. No compartas tus claves API con nadie.', 'Si todavía no puedes operar, usa Pulso para practicar: sigue monedas, crea alertas y anota compras imaginarias en la Cartera.']],
+  ] },
+];
+
+const VLearn = {
+  init() {
+    const box = h('div', { class: 'learn' });
+    LEARN.forEach((it, i) => {
+      const body = h('div', { class: 'body' });
+      it.b.forEach(([kind, v]) => {
+        if (kind === 'p') body.append(h('p', { text: v }));
+        else if (kind === 'code') body.append(h('p', null, h('code', { text: v })));
+        else body.append(h('ul', null, v.map((x) => h('li', { text: x }))));
+      });
+      box.append(h('details', { open: i === 0 }, h('summary', { text: it.t }), body));
+    });
+    $('#v-aprende').append(box, h('p', { class: 'disc', text: 'Contenido educativo. No es asesoría financiera.' }));
+  },
+};
+
+const VSettings = {
+  init() {
+    const body = $('#stBody');
+    const row = (label, hint, ctl) => h('div', { class: 'set-row' }, h('div', null, h('div', { class: 'lbl', text: label }), hint ? h('div', { class: 'hint', text: hint }) : null), ctl);
+    const sw = (key, label, after) => {
+      const b = h('button', { class: 'sw', type: 'button', role: 'switch', 'aria-checked': String(!!S.settings[key]), 'aria-label': label });
+      b.addEventListener('click', async () => {
+        const on = !S.settings[key];
+        if (after) { const ok = await after(on); if (ok === false) return; }
+        S.settings[key] = on;
+        b.setAttribute('aria-checked', String(on));
+        saveStore();
+      });
+      return b;
+    };
+    const rows = [];
+    rows.push(row('Sonido en alertas', null, sw('sound', 'Sonido en alertas', (on) => { if (on) { unlockAudio(); setTimeout(beep, 50); } })));
+    if (navigator.vibrate) rows.push(row('Vibración', 'En celulares que lo permiten.', sw('vibrate', 'Vibración', (on) => { if (on) navigator.vibrate(120); })));
+    if ('wakeLock' in navigator) {
+      rows.push(row('Pantalla encendida', 'Evita que el teléfono se bloquee mientras Pulso está abierto. Gasta más batería.', sw('wake', 'Mantener la pantalla encendida', async (on) => {
+        const ok = await setWake(on);
+        if (on && !ok) { UI.flash('Tu navegador no permitió mantener la pantalla encendida.'); return false; }
+        return true;
+      })));
+    }
+    this.themeBtns = {};
+    const seg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Tema' });
+    [['auto', 'Auto'], ['light', 'Claro'], ['dark', 'Oscuro']].forEach(([id, label]) => {
+      const b = h('button', { type: 'button', text: label, 'aria-pressed': String(S.settings.theme === id), onclick: () => {
+        S.settings.theme = id;
+        saveStore();
+        UI.applyTheme();
+        for (const k in this.themeBtns) this.themeBtns[k].setAttribute('aria-pressed', String(k === id));
+      } });
+      this.themeBtns[id] = b;
+      seg.append(b);
+    });
+    rows.push(row('Tema', null, seg));
+    this.notifHost = h('div');
+    rows.push(row('Avisos del sistema', 'Notificaciones del navegador cuando salta una alerta.', this.notifHost));
+    this.connTxt = h('div', { class: 'hint' });
+    rows.push(row('Conexión', null, null));
+    rows[rows.length - 1].firstChild.append(this.connTxt);
+    rows.push(row(S.demo ? 'Modo ejemplo activo' : 'Datos de ejemplo', S.demo ? 'Los precios son simulados.' : 'Mira la app con precios simulados, sin conexión a Binance.',
+      h('button', { class: 'btn sm', type: 'button', text: S.demo ? 'Usar datos reales' : 'Probar', onclick: () => { location.href = location.pathname + (S.demo ? '' : '?demo'); } })));
+    this.clearBtn = h('button', { class: 'btn sm danger', type: 'button', text: 'Borrar', onclick: () => this.clear() });
+    rows.push(row('Borrar mis datos', 'Favoritas, alertas, cartera e historial.', this.clearBtn));
+    body.append(...rows, h('p', { class: 'hint', style: 'margin-top:14px', text: 'Pulso usa solo datos públicos de mercado de Binance. No pide claves ni accede a tu cuenta. Tus favoritas, alertas y cartera se guardan solo en este navegador.' }));
+  },
+  open() {
+    this.renderNotif();
+    this.tick();
+    openSheet($('#settings'), '#stBack');
+  },
+  renderNotif() {
+    const p = notifSupported() ? Notification.permission : 'unsupported';
+    const box = this.notifHost;
+    if (p === 'default') box.replaceChildren(h('button', { class: 'btn sm primary', type: 'button', text: 'Activar', onclick: async () => { await askNotifPermission(); this.renderNotif(); } }));
+    else if (p === 'granted') box.replaceChildren(h('button', { class: 'btn sm', type: 'button', text: 'Probar', onclick: () => notify('Pulso · prueba', 'Así se ve un aviso de alerta.', null, true) }));
+    else box.replaceChildren(h('span', { class: 'hint', text: p === 'denied' ? 'Bloqueados' : 'No disponible' }));
+  },
+  tick() {
+    let t;
+    if (S.demo) t = 'Precios simulados en este dispositivo.';
+    else {
+      let host = '';
+      try { host = new URL(S.conn.host || S.conn.url || 'https://x').host; } catch (e) { host = ''; }
+      const age = S.conn.lastMsg ? 'último dato hace ' + ago(Date.now() - S.conn.lastMsg) : 'sin datos todavía';
+      t = (S.conn.status === 'live' ? 'En vivo' : S.conn.pollAt && Date.now() - S.conn.pollAt < 15000 ? 'Consulta cada 5 s' : 'Sin conexión en vivo') + (host && S.conn.status !== 'idle' ? ' · ' + host : '') + ' · ' + age;
+    }
+    setText(this.connTxt, t);
+  },
+  clear() {
+    if (!this.confirm) {
+      this.confirm = true;
+      setText(this.clearBtn, 'Confirmar');
+      this.confirmT = setTimeout(() => { this.confirm = false; setText(this.clearBtn, 'Borrar'); }, 4000);
+      return;
+    }
+    clearTimeout(this.confirmT);
+    this.confirm = false;
+    setText(this.clearBtn, 'Borrar');
+    S.watch = []; S.alerts = []; S.positions = []; S.log = [];
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* bloqueado */ }
+    saveStore();
+    onTrackedChanged();
+    VMarket.render();
+    VAlerts.render();
+    VWallet.render();
+    UI.flash('Datos borrados.');
+  },
+};
+
+'use strict';
+/* ==========================================================================
+   Pulso · arranque, ciclo de vida y respaldo por consulta periódica
+   ========================================================================== */
+
+let tickN = 0;
+let lastPoll = 0;
+let bootTries = 0;
+let startTimer = 0;
+let starting = false;
+
+/* Respaldo: si el WebSocket no llega, consulta los precios cada 5 s */
+async function pollOnce() {
+  const syms = [...wsWanted()].filter((s) => S.M.has(s)).slice(0, 100);
+  if (!syms.length) return;
+  const rows = await rest('/api/v3/ticker/24hr', { symbols: syms }, 8000);
+  if (!Array.isArray(rows)) return;
+  S.conn.pollAt = Date.now();
+  for (const r of rows) {
+    onTicker({ e: '24hrMiniTicker', s: r.symbol, c: r.lastPrice, o: r.openPrice, h: r.highPrice, l: r.lowPrice, v: r.volume, q: r.quoteVolume });
+  }
+}
+
+function everySecond() {
+  tickN++;
+  if (S.ready && !S.demo) {
+    wsWatchdog();
+    const live = S.conn.status === 'live' && Date.now() - S.conn.lastMsg < 8000;
+    if (!live && Date.now() - lastPoll > 5000) {
+      lastPoll = Date.now();
+      pollOnce().catch(() => {});
+    }
+  }
+  UI.tick(tickN);
+}
+
+function slowJobs() {
+  if (!S.ready) return;
+  maintenance();
+  refreshW1().catch(() => {});
+}
+async function refreshUniverse() {
+  if (!S.ready || S.demo) return;
+  try {
+    await loadUniverse();
+    UI.fillCoinList();
+    onTrackedChanged();
+    VMarket.render();
+  } catch (e) { /* se reintenta en el próximo ciclo */ }
+}
+
+async function start() {
+  if (starting) return;
+  starting = true;
+  clearTimeout(startTimer);
+  try {
+    UI.updateStatus();
+    if (S.demo) UI.banner('info', 'Modo ejemplo: los precios son simulados. Sirve para ver cómo funciona la app.');
+    else UI.clearBanner();
+    try {
+      await loadUniverse();
+    } catch (e) {
+      S.conn.status = 'down';
+      UI.updateStatus();
+      UI.banner('err', 'No pude conectar con Binance (' + (e.message || 'error de red') + '). Revisa tu internet. Reintento solo.', 'Reintentar ahora', () => start());
+      startTimer = setTimeout(start, Math.min(60000, 5000 * ++bootTries));
+      return;
+    }
+    bootTries = 0;
+    S.ready = true;
+    UI.fillCoinList();
+    if (S.demo) demoStart(); else wsConnect();
+    maintenance();
+    refreshW1().catch(() => {});
+    VMarket.render();
+    VMarket.refreshBrief();
+    VMarket.refreshRadar();
+    VWallet.render();
+    UI.updateStatus();
+  } finally {
+    starting = false;
+  }
+}
+
+function registerSW() {
+  if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
+  navigator.serviceWorker.register('sw.js').then(() => navigator.serviceWorker.ready).then(setSwReg).catch(() => { /* sin service worker: avisos solo dentro de la página */ });
+}
+
+function boot() {
+  S.demo = /[?&]demo(=|&|$)/.test(location.search);
+  loadStore();
+  UI.init();
+  registerSW();
+  start();
+  setInterval(everySecond, 1000);
+  setInterval(slowJobs, 60000);
+  setInterval(refreshUniverse, 30 * 60000);
+  if (S.settings.wake) setWake(true);
+  document.addEventListener('visibilitychange', () => {
+    wsSync();
+    if (document.hidden) return;
+    if (S.ready) {
+      maintenance();
+      refreshW1().catch(() => {});
+      if (!S.demo) wsWatchdog();
+    }
+    if (S.settings.wake) setWake(true);
+  });
+  window.addEventListener('online', () => {
+    if (!S.ready) start();
+    else if (!S.demo) wsRestart();
+  });
+}
+boot();
+
+</script>
+</body>
+</html>
